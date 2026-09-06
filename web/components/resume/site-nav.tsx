@@ -25,7 +25,7 @@ export function SiteNav() {
         <a href="#top" className="text-[15px] font-semibold tracking-wide">
           杨胜
         </a>
-        <div className="hidden items-center gap-7 md:flex">
+        <div className="flex items-center gap-5 md:gap-7">
           {LINKS.map((link) => (
             <a key={link.href} href={link.href} className="nav-link">
               {link.label}

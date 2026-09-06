@@ -9,7 +9,18 @@ import { existsSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
-const PUBLIC_BASE = process.env.PUBLIC_BASE ?? "http://8.218.79.152";
+/** 从 .env 读生产域名作为默认验证入口（裸 IP+80 会被 301 到 HTTPS 且证书不匹配） */
+function resolvePublicBase() {
+  if (process.env.PUBLIC_BASE) return process.env.PUBLIC_BASE;
+  try {
+    const domain = readFileSync(join(ROOT, ".env"), "utf8").match(/^DOMAIN=(.+)$/m)?.[1]?.trim();
+    if (domain && !domain.includes("example.com")) return `https://${domain}`;
+  } catch {
+    /* .env 缺失时走兜底 */
+  }
+  return "http://8.218.79.152";
+}
+const PUBLIC_BASE = resolvePublicBase();
 const SERVER_CONTAINER = "codeyang-resume-server-1";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "../../../..");
 
@@ -75,19 +86,13 @@ if (published.status !== 0 || !published.stdout.includes("OK #")) {
 console.log(published.stdout.trim());
 
 log("强刷 web 数据缓存（fetch 缓存在容器可写层，restart 无效）…");
+// 生产栈带 prod 叠加文件（nginx/certbot 配置），带上以免服务配置漂移
+const composeFiles = existsSync(join(ROOT, "deploy/nginx/runtime/default.conf"))
+  ? ["-f", "deploy/compose.yaml", "-f", "deploy/compose.prod.yaml"]
+  : ["-f", "deploy/compose.yaml"];
 const recreate = spawnSync(
   "docker",
-  [
-    "compose",
-    "--env-file",
-    ".env",
-    "-f",
-    "deploy/compose.yaml",
-    "up",
-    "-d",
-    "--force-recreate",
-    "web",
-  ],
+  ["compose", "--env-file", ".env", ...composeFiles, "up", "-d", "--force-recreate", "web"],
   { cwd: ROOT, stdio: "inherit" },
 );
 if (recreate.status !== 0) fail("web 容器重建失败");

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { fetchPublishedResume } from "@/lib/api";
-import { EducationFooter } from "@/components/resume/education-footer";
+import { EducationSection, SiteFooter } from "@/components/resume/education-footer";
 import { ExperienceSpec } from "@/components/resume/experience-spec";
 import { Hero } from "@/components/resume/hero";
 import { ProjectTiles } from "@/components/resume/project-tiles";
@@ -8,8 +8,10 @@ import { SkillSpec } from "@/components/resume/skill-spec";
 import { StatBand } from "@/components/resume/stat-band";
 
 /**
- * 每请求渲染（SSR，SEO 友好），数据层由 fetch 的 revalidate=300 缓存 5 分钟：
- * 发布新版本最多 5 分钟生效；DB 短暂不可用时仍可用缓存/兜底页。
+ * 每请求渲染（SSR，SEO 友好）。注意：force-dynamic 下 fetch 的 revalidate=300
+ * 数据缓存会被旁路（等价 force-no-store），即每次请求都会回源 server；
+ * DB 抖动时页面走 ServiceUnavailable 兜底，而非 5 分钟陈旧缓存。
+ * 保持 force-dynamic 是因为容器构建期无数据库，无法静态预渲染。
  */
 export const dynamic = "force-dynamic";
 
@@ -43,14 +45,15 @@ export default async function HomePage() {
         {content.skillGroups.length > 0 && <SkillSpec groups={content.skillGroups} />}
         {content.projects.length > 0 && <ProjectTiles projects={content.projects} />}
         {content.experiences.length > 0 && <ExperienceSpec experiences={content.experiences} />}
-        <EducationFooter
-          education={content.education}
-          profile={content.profile}
-          versionNumber={version.number}
-          versionLabel={version.label}
-          updatedAt={resume.updatedAt}
-        />
+        <EducationSection education={content.education} />
       </main>
+
+      <SiteFooter
+        profile={content.profile}
+        versionNumber={version.number}
+        versionLabel={version.label}
+        updatedAt={resume.updatedAt}
+      />
 
       {/* SEO：Person 结构化数据 */}
       <script
@@ -72,7 +75,7 @@ export default async function HomePage() {
   );
 }
 
-/** API 不可用时的兜底页：ISR 缓存失效且取数失败时展示 */
+/** API 不可用时的兜底页：数据层取数失败时展示 */
 function ServiceUnavailable({ detail }: { detail: string }) {
   return (
     <main className="mx-auto flex min-h-screen max-w-xl flex-col items-center justify-center gap-4 px-6 text-center">
@@ -81,7 +84,7 @@ function ServiceUnavailable({ detail }: { detail: string }) {
         内容服务没有响应，稍后会自动恢复。你是站长？检查 server 容器与数据库：
         <code className="mx-1 rounded bg-[var(--surface-2)] px-1.5 py-0.5 font-mono text-xs">docker compose ps</code>
       </p>
-      <p className="font-mono text-xs text-[var(--text-dim)]/60">{detail}</p>
+      <p className="font-mono text-xs text-[var(--text-dim)]">{detail}</p>
     </main>
   );
 }

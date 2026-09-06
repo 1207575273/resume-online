@@ -7,7 +7,7 @@ WORKDIR /repo
 
 # ---------- 依赖层 ----------
 FROM base AS deps
-COPY pnpm-workspace.yaml pnpm-lock.yaml package.json ./
+COPY pnpm-workspace.yaml pnpm-lock.yaml package.json .npmrc ./
 COPY server/package.json server/package.json
 COPY web/package.json web/package.json
 RUN pnpm install --frozen-lockfile --filter @resume/web...

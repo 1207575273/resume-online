@@ -34,6 +34,9 @@ services:
     build:
       context: ..
       dockerfile: server/Dockerfile
+      # 本机 docker 桥接网络访问 npm registry 极慢（并发元数据请求会超时），
+      # 构建期走 host 网络；不影响运行时容器网络隔离
+      network: host
     restart: unless-stopped
     labels:
       resume.project: "CodeYang 在线简历"
@@ -58,6 +61,7 @@ services:
     build:
       context: ..
       dockerfile: web/Dockerfile
+      network: host
       args:
         SITE_URL: ${SITE_URL:-http://localhost}
     restart: unless-stopped
@@ -73,8 +77,28 @@ services:
       - server
     networks: [internal]
 
+  pdf:
+    build:
+      context: ../pdf
+      dockerfile: Dockerfile
+      network: host
+    restart: unless-stopped
+    labels:
+      resume.project: "CodeYang 在线简历"
+      resume.repo: "codeyang-resume-online"
+      resume.service: "PDF 导出 · Playwright 无头浏览器（屏幕级保真）"
+      resume.layer: "应用层"
+    environment:
+      PDF_PAGE_URL: http://web:3000/
+    depends_on:
+      - web
+    networks: [internal]
+
   nginx:
     image: nginx:1.27-alpine
+    extra_hosts:
+      # PDF 导出服务暂跑在宿主机 :3002（node pdf-host.mjs），容器化后再切回 pdf:3002
+      - "host.docker.internal:host-gateway"
     restart: unless-stopped
     labels:
       resume.project: "CodeYang 在线简历"

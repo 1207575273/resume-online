@@ -15,11 +15,21 @@ export interface ResumeProfile {
   location?: string;
   email?: string;
   links: ResumeLink[];
+  /** 定位标签（如「AI 原生人才」），Hero 区展示 */
+  tags?: string[];
+}
+
+/** 单项技能：level 为 0-100 熟练度（进度条），缺省 = 只展示名称不打分 */
+export interface SkillItem {
+  name: string;
+  level?: number;
 }
 
 export interface SkillGroup {
   name: string;
-  skills: string[];
+  /** 组级注释一行（如「自费 Claude Code 投入 ¥30,000+」） */
+  note?: string;
+  skills: SkillItem[];
 }
 
 export interface ExperienceItem {

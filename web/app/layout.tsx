@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { SideDots } from "@/components/resume/side-dots";
 import { SiteNav } from "@/components/resume/site-nav";
 import "./globals.css";
 
@@ -44,7 +45,12 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
       </head>
       <body>
+        {/* 无 JS 时入场动画停在 opacity:0——这里直接展开全部内容兜底 */}
+        <noscript>
+          <style>{`[data-reveal]{opacity:1!important;transform:none!important}`}</style>
+        </noscript>
         <SiteNav />
+        <SideDots />
         {children}
       </body>
     </html>

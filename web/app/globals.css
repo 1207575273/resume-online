@@ -3,36 +3,45 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* ========== 设计令牌：Keynote 深空 ========== */
+/* ========== 设计令牌：极光工程档案 ========== */
 :root {
   --bg: #f5f5f7;
-  --bg-deep: #ffffff;
   --surface: #ffffff;
   --surface-2: #eeeef0;
   --text: #1d1d1f;
-  --text-dim: #6e6e73;
+  --text-dim: #5d5d63;
   --accent: #0071e3;
+  --accent-solid: #0071e3;
   --hairline: rgba(0, 0, 0, 0.1);
   --nav-bg: rgba(245, 245, 247, 0.72);
   --glass-border: rgba(0, 0, 0, 0.06);
+  --chip-bg: #ececf1;
+  --card-border-hover: rgba(0, 113, 227, 0.38);
+  --card-lift: 0 14px 34px -18px rgba(0, 60, 130, 0.22);
+  --aurora-from: #0071e3;
 }
 
 .dark {
   --bg: #050507;
-  --bg-deep: #000000;
   --surface: #0d0d11;
   --surface-2: #131318;
   --text: #f5f5f7;
   --text-dim: #86868b;
   --accent: #2997ff;
+  --accent-solid: #0071e3;
   --hairline: rgba(255, 255, 255, 0.09);
   --nav-bg: rgba(5, 5, 7, 0.65);
   --glass-border: rgba(255, 255, 255, 0.08);
+  --chip-bg: #17171e;
+  --card-border-hover: rgba(41, 151, 255, 0.42);
+  --card-lift: 0 18px 42px -20px rgba(0, 0, 0, 0.75);
+  --aurora-from: #2997ff;
 }
 
-/* 极光渐变：只给关键数字与 Hero 微光 */
+/* 极光渐变：只用于数字带关键数字（Hero 微光是 .hero-glow）；
+   亮色起点加深保证浅底对比度 ≥3:1 */
 .aurora-text {
-  background: linear-gradient(105deg, #2997ff 0%, #7d5fff 48%, #bf5af2 100%);
+  background: linear-gradient(105deg, var(--aurora-from) 0%, #7d5fff 48%, #bf5af2 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -72,6 +81,16 @@
   a {
     color: inherit;
   }
+  a:focus-visible,
+  button:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 8px;
+  }
+  /* 锚点跳转时标题不被固定导航遮挡 */
+  section[id] {
+    scroll-margin-top: 76px;
+  }
 }
 
 /* ========== 玻璃导航 ========== */
@@ -96,6 +115,12 @@
   color: var(--text-dim);
   transition: color 0.2s ease;
 }
+/* 导航条内所有链接：44px 触达区（WCAG 2.5.8 / Apple HIG），视觉高度不变 */
+.site-nav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
 .nav-link:hover {
   color: var(--text);
 }
@@ -108,80 +133,333 @@
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  /* 小屏内容高过视口时，为 52px 固定导航留出安全区 */
+  padding-top: 52px;
 }
-.hero-glow {
+/* ========== Hero 极光背景：流动绸缎 blob + 工程网格 ========== */
+.aurora-field {
   position: absolute;
   inset: 0;
-  background:
-    radial-gradient(52% 42% at 50% 46%, rgba(41, 151, 255, 0.13), transparent 70%),
-    radial-gradient(36% 30% at 68% 60%, rgba(125, 95, 255, 0.1), transparent 70%),
-    radial-gradient(30% 26% at 34% 62%, rgba(191, 90, 242, 0.07), transparent 70%);
+  overflow: hidden;
   pointer-events: none;
 }
-.hero-statement {
-  font-size: clamp(2.4rem, 6.2vw, 4.6rem);
-  font-weight: 700;
-  letter-spacing: -0.022em;
-  line-height: 1.18;
+.aurora-blob {
+  position: absolute;
+  width: 58vmax;
+  height: 58vmax;
+  border-radius: 50%;
+  filter: blur(72px);
+  opacity: 0.75;
+  will-change: transform;
 }
-.hero-name {
-  font-size: clamp(1.05rem, 2vw, 1.3rem);
-  font-weight: 600;
+.ab-1 {
+  left: -18vmax;
+  top: -20vmax;
+  background: radial-gradient(circle at 35% 35%, rgba(0, 113, 227, 0.34), transparent 64%);
+  animation: aurora-drift-1 44s ease-in-out infinite alternate;
+}
+.ab-2 {
+  right: -22vmax;
+  top: -8vmax;
+  background: radial-gradient(circle at 60% 40%, rgba(125, 95, 255, 0.26), transparent 64%);
+  animation: aurora-drift-2 56s ease-in-out infinite alternate;
+}
+.ab-3 {
+  left: 8vw;
+  bottom: -30vmax;
+  background: radial-gradient(circle at 50% 50%, rgba(191, 90, 242, 0.2), transparent 64%);
+  animation: aurora-drift-3 68s ease-in-out infinite alternate;
+}
+.dark .ab-1 {
+  background: radial-gradient(circle at 35% 35%, rgba(41, 151, 255, 0.3), transparent 64%);
+}
+.dark .ab-2 {
+  background: radial-gradient(circle at 60% 40%, rgba(125, 95, 255, 0.24), transparent 64%);
+}
+.dark .ab-3 {
+  background: radial-gradient(circle at 50% 50%, rgba(191, 90, 242, 0.18), transparent 64%);
+}
+@keyframes aurora-drift-1 {
+  from {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  to {
+    transform: translate3d(9vw, 7vh, 0) scale(1.18);
+  }
+}
+@keyframes aurora-drift-2 {
+  from {
+    transform: translate3d(0, 0, 0) scale(1.1);
+  }
+  to {
+    transform: translate3d(-8vw, 10vh, 0) scale(0.92);
+  }
+}
+@keyframes aurora-drift-3 {
+  from {
+    transform: translate3d(0, 0, 0) scale(0.95);
+  }
+  to {
+    transform: translate3d(6vw, -8vh, 0) scale(1.15);
+  }
+}
+/* 工程网格：极淡发丝线，径向渐隐只留中心区域 */
+.aurora-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(var(--hairline) 1px, transparent 1px),
+    linear-gradient(90deg, var(--hairline) 1px, transparent 1px);
+  background-size: 56px 56px;
+  -webkit-mask-image: radial-gradient(58% 52% at 50% 44%, #000 0%, transparent 78%);
+  mask-image: radial-gradient(58% 52% at 50% 44%, #000 0%, transparent 78%);
+  opacity: 0.55;
+}
+/* 移动端：少一个 blob、blur 收一点，保帧率 */
+@media (max-width: 767px) {
+  .ab-3 {
+    display: none;
+  }
+  .aurora-blob {
+    filter: blur(56px);
+  }
+}
+
+/* ========== Hero 滚动视差（--p 由 HeroParallax 写入，0→1）========== */
+.hero-parallax {
+  position: relative;
+  display: flex;
+  flex: 1;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+}
+.hero-content {
+  transform: translateY(calc(var(--p, 0) * -8vh)) scale(calc(1 - var(--p, 0) * 0.05));
+  opacity: max(calc(1 - var(--p, 0) * 1.2), 0);
+  will-change: transform, opacity;
+}
+.hero-parallax .aurora-field {
+  transform: translateY(calc(var(--p, 0) * 12vh));
+  will-change: transform;
+}
+
+/* ========== Hero 定位标签 ========== */
+.hero-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.35em 1em;
+  border-radius: 999px;
+  border: 1px solid var(--hairline);
+  background: color-mix(in srgb, var(--surface) 55%, transparent);
+  font-size: 13px;
   color: var(--text-dim);
-  letter-spacing: 0.28em;
-  margin-left: 0.28em;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+.hero-tag:hover {
+  color: var(--text);
+}
+/* 含 ¥ 的强调版（如「Claude Code 自费 ¥30,000+」） */
+.hero-tag-hot {
+  border-color: rgba(0, 113, 227, 0.45);
+  color: var(--accent);
+  font-weight: 500;
+}
+.dark .hero-tag-hot {
+  border-color: rgba(41, 151, 255, 0.5);
+}
+
+/* ========== 技能熟练度 ========== */
+.skill-level {
+  font-size: 12.5px;
+  color: var(--text-dim);
+  font-feature-settings: "tnum";
+  font-variant-numeric: tabular-nums;
+}
+.skill-track {
+  margin-top: 6px;
+  height: 3px;
+  border-radius: 999px;
+  background: var(--chip-bg);
+  overflow: hidden;
+}
+.dark .skill-track {
+  background: rgba(255, 255, 255, 0.13);
+}
+.skill-fill {
+  height: 100%;
+  width: var(--level, 0%);
+  border-radius: inherit;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 1s cubic-bezier(0.2, 0.65, 0.25, 1) 0.15s;
+}
+.revealed .skill-fill {
+  transform: none;
+}
+.skill-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--hairline);
+  border-radius: 14px;
+  background: var(--surface);
+  transition: border-color 0.3s ease;
+}
+.skill-badge:hover {
+  border-color: var(--card-border-hover);
 }
 
 /* ========== 数字带 ========== */
 .stat-number {
-  font-size: clamp(2.6rem, 5.6vw, 4.2rem);
+  font-size: clamp(1.9rem, 4.6vw, 3.4rem);
   font-weight: 700;
   letter-spacing: -0.02em;
   font-feature-settings: "tnum";
   font-variant-numeric: tabular-nums;
   line-height: 1.05;
+  /* "8000 万+" 数字与单位不许折行，保证四格基线一致 */
+  white-space: nowrap;
 }
 .stat-label {
-  font-size: 0.95rem;
+  font-size: 0.85rem;
   color: var(--text-dim);
   margin-top: 0.5rem;
 }
+@media (min-width: 640px) {
+  .stat-label {
+    font-size: 0.95rem;
+  }
+}
 
-/* ========== 规格（经历）========== */
+/* ========== 规格（经历 / 技能 / 教育）========== */
+/* 移动端单列堆叠，≥768px 才进入左窄右宽的双列规格表；
+   minmax(0,1fr) + 子项 min-width:0 —— 防长串（如 Primary/Secondary）撑破 320px 小屏 */
 .spec-grid {
   display: grid;
-  grid-template-columns: minmax(200px, 5fr) 8fr;
-  gap: 2rem 4rem;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem 4rem;
+}
+.spec-grid > * {
+  min-width: 0;
+}
+/* 经历成果里的不可断长串兜底断行（配合上面的轨道压缩才有效） */
+#experience .spec-grid p,
+#experience .spec-grid li span {
+  overflow-wrap: anywhere;
+}
+@media (min-width: 768px) {
+  .spec-grid {
+    grid-template-columns: minmax(180px, 5fr) 8fr;
+    gap: 1rem 4rem;
+  }
 }
 .spec-time {
   font-size: 0.9rem;
   color: var(--text-dim);
   font-feature-settings: "tnum";
+  font-variant-numeric: tabular-nums;
 }
 
-/* ========== 项目瓷片 ========== */
-.tile {
-  position: relative;
-  border-radius: 24px;
+/* 经历是真实时序：发丝线上放时间线节点 */
+.tl-dot {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 7px;
+  height: 7px;
+  transform: translateY(-50%);
+  border-radius: 999px;
+  background: var(--accent);
+  box-shadow: 0 0 0 4px var(--surface-2);
+}
+
+/* ========== 芯片（技术栈 / 技能）========== */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.26em 0.8em;
+  border-radius: 999px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--text-dim);
+  background: var(--chip-bg);
+  transition: color 0.2s ease;
+}
+.chip:hover {
+  color: var(--text);
+}
+/* 灰底区带（经历）内的芯片换成亮面 */
+.tint .chip {
   background: var(--surface);
-  overflow: hidden;
-  transition: transform 0.5s cubic-bezier(0.2, 0.6, 0.2, 1);
 }
-.tile:hover {
-  transform: translateY(-4px);
+.dark .tint .chip {
+  background: var(--surface);
 }
-.tile-art {
-  aspect-ratio: 16 / 8.5;
+
+/* ========== 卡片系统 ========== */
+.card {
+  position: relative;
+  border-radius: 18px;
+  background: var(--surface);
+  border: 1px solid var(--hairline);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+.dark .card {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0) 36%), #0d0d11;
+}
+.card:hover {
+  border-color: var(--card-border-hover);
+  box-shadow: var(--card-lift);
+}
+
+/* ========== 项目视觉图：深空屏（两主题恒定深底亮线）========== */
+.art {
   display: block;
   width: 100%;
   height: auto;
+  color: #fff;
+  background:
+    radial-gradient(90% 85% at 16% 6%, rgba(41, 151, 255, 0.22), transparent 62%),
+    radial-gradient(80% 75% at 90% 98%, rgba(191, 90, 242, 0.18), transparent 58%),
+    linear-gradient(180deg, #0d0d16, #08080f);
 }
-.tile:hover .tile-art .art-accent {
+.art-stroke {
+  aspect-ratio: 16 / 8.5;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+.art-side {
+  height: 100%;
+  min-height: 280px;
+  border-inline-start: 1px solid rgba(255, 255, 255, 0.06);
+}
+/* 暗色下图面抬亮半档，与卡面拉开，保住"屏"的边界 */
+.dark .art {
+  background:
+    radial-gradient(90% 85% at 16% 6%, rgba(41, 151, 255, 0.24), transparent 62%),
+    radial-gradient(80% 75% at 90% 98%, rgba(191, 90, 242, 0.2), transparent 58%),
+    linear-gradient(180deg, #14141f, #0a0a13);
+}
+/* featured 卡在移动端：视觉图降为普通横条，避免大块深色占屏 */
+@media (max-width: 767px) {
+  .art-side {
+    height: auto;
+    min-height: 0;
+    aspect-ratio: 16 / 8.5;
+    border-inline-start: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  }
+}
+.card:hover .art .art-accent {
   opacity: 1;
 }
-.tile-art .art-accent {
-  opacity: 0.66;
-  transition: opacity 0.5s ease;
+.art .art-accent {
+  opacity: 0.72;
+  transition: opacity 0.4s ease;
 }
 
 /* ========== 滚动 reveal（一次性、克制）========== */
@@ -206,15 +484,43 @@
     transform: none;
     transition: none;
   }
-  .tile,
-  .tile:hover {
-    transform: none;
+  .card {
     transition: none;
+  }
+  /* 入场动画与弹跳箭头一并停掉（前庭安全） */
+  .animate-bounce,
+  .animate-in {
+    animation: none;
+  }
+  .aurora-blob {
+    animation: none;
+  }
+  .skill-fill {
+    transition: none;
+    transform: none;
+  }
+}
+
+/* 触屏按下反馈（桌面 hover 之外补一层确认感） */
+@media (pointer: coarse) {
+  a:active,
+  button:active {
+    opacity: 0.65;
   }
 }
 
 /* ========== 打印 ========== */
 @media print {
+  /* 暗色是默认主题：打印前强制回归亮色变量，否则白纸白字 */
+  .dark {
+    --text: #1d1d1f;
+    --text-dim: #6e6e73;
+    --surface: #ffffff;
+    --surface-2: #eeeef0;
+    --chip-bg: #ececf1;
+    --hairline: rgba(0, 0, 0, 0.1);
+    --accent: #0071e3;
+  }
   .no-print {
     display: none !important;
   }
@@ -231,7 +537,20 @@
     color: #000;
     -webkit-text-fill-color: #000;
   }
-  .tile,
+  .art {
+    display: none;
+  }
+  .aurora-field {
+    display: none;
+  }
+  .skill-fill {
+    transform: none;
+  }
+  .card {
+    display: block !important;
+    box-shadow: none;
+  }
+  .card,
   .spec-grid {
     break-inside: avoid;
   }

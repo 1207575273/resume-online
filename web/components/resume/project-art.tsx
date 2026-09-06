@@ -1,7 +1,26 @@
 /**
  * 程序化生成的项目视觉图：每个项目一张专属 SVG。
  * 全部矢量、零外部资源；青紫渐变点睛，其余用 currentColor。
+ * 按项目身份（名称关键字）匹配图形，数据重排不会串图；识别不了再退回下标。
  */
+import type { ComponentType } from "react";
+
+type Artwork = ComponentType<{ id: string }>;
+
+const ART_MAP: Array<[RegExp, Artwork]> = [
+  [/渲染/i, RenderEngineArt],
+  [/数据|平台/i, ShardMatrixArt],
+  [/ccode|cli/i, TerminalArt],
+  [/sip|截屏|gif/i, ViewfinderArt],
+  [/简历|本站|resume/i, TopologyArt],
+];
+
+function pickArtwork(name: string): Artwork | null {
+  for (const [pattern, Artwork] of ART_MAP) {
+    if (pattern.test(name)) return Artwork;
+  }
+  return null;
+}
 
 function ArtDefs({ id }: { id: string }) {
   return (
@@ -141,19 +160,25 @@ function TopologyArt({ id }: { id: string }) {
 
 const ARTWORKS = [RenderEngineArt, ShardMatrixArt, TerminalArt, ViewfinderArt, TopologyArt];
 
-export function ProjectArt({ index }: { index: number }) {
-  const Artwork = ARTWORKS[index % ARTWORKS.length];
+export function ProjectArt({
+  name,
+  index,
+  side = false,
+}: {
+  name: string;
+  index: number;
+  side?: boolean;
+}) {
+  const Artwork = pickArtwork(name) ?? ARTWORKS[index % ARTWORKS.length];
   const gradientId = `pa-${index}`;
   return (
     <svg
       viewBox="0 0 400 212"
-      className="tile-art"
-      role="img"
-      aria-label="项目视觉图"
+      className={side ? "art art-side" : "art art-stroke"}
+      aria-hidden="true"
       preserveAspectRatio="xMidYMid slice"
     >
       <ArtDefs id={gradientId} />
-      <rect width="400" height="212" fill="var(--surface-2)" />
       <g className="art-accent">
         <Artwork id={gradientId} />
       </g>

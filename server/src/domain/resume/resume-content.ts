@@ -17,11 +17,22 @@ export interface ResumeProfile {
   location?: string;
   email?: string;
   links: ResumeLink[];
+  /** 定位标签（如「AI 原生人才」），Hero 区展示；旧版本缺省为空 */
+  tags?: string[];
+}
+
+/** 单项技能：level 为 0-100 熟练度（进度条），缺省 = 只展示名称不打分 */
+export interface SkillItem {
+  name: string;
+  level?: number;
 }
 
 export interface SkillGroup {
   name: string;
-  skills: string[];
+  /** 组级注释一行（如「自费 Claude Code 投入 ¥30,000+」） */
+  note?: string;
+  /** 规范化为对象数组；校验同时接受旧版纯字符串形态（历史快照兼容） */
+  skills: SkillItem[];
 }
 
 export interface ExperienceItem {
@@ -110,11 +121,30 @@ export function createResumeContent(raw: unknown): ResumeContent {
       const link = asRecord(item, "content.profile.links[]");
       return { label: str(link, "label", "links[]")!, url: str(link, "url", "links[]")! };
     }),
+    tags: strArray(profileRaw, "tags", "content.profile", true),
   };
 
   const skillGroups: SkillGroup[] = arr(root, "skillGroups", "content").map((item) => {
     const group = asRecord(item, "content.skillGroups[]");
-    return { name: str(group, "name", "skillGroups[]")!, skills: strArray(group, "skills", "skillGroups[]") };
+    const skills: SkillItem[] = arr(group, "skills", "skillGroups[]").map((entry) => {
+      // 旧版快照是纯字符串数组；新版是 {name, level}
+      if (typeof entry === "string") return { name: entry };
+      const skill = asRecord(entry, "content.skillGroups[].skills[]");
+      const raw = skill.level;
+      let level: number | undefined;
+      if (raw !== undefined && raw !== null) {
+        if (typeof raw !== "number" || !Number.isFinite(raw) || raw < 0 || raw > 100) {
+          throw new ValidationError("skillGroups[].skills[].level 应为 0-100 的数值");
+        }
+        level = raw;
+      }
+      return { name: str(skill, "name", "skills[]")!, level };
+    });
+    return {
+      name: str(group, "name", "skillGroups[]")!,
+      note: str(group, "note", "skillGroups[]", true),
+      skills,
+    };
   });
 
   const experiences: ExperienceItem[] = arr(root, "experiences", "content").map((item) => {

@@ -27,7 +27,7 @@ export function ThemeToggle() {
       type="button"
       onClick={toggle}
       aria-label="切换主题"
-      className="no-print flex size-8 cursor-pointer items-center justify-center rounded-full text-[var(--text-dim)] transition-colors duration-200 hover:bg-[var(--surface-2)] hover:text-[var(--text)]"
+      className="no-print flex size-11 cursor-pointer items-center justify-center rounded-full text-[var(--text-dim)] transition-colors duration-200 hover:bg-[var(--surface-2)] hover:text-[var(--text)]"
     >
       {dark ? <Moon className="size-4" aria-hidden /> : <Sun className="size-4" aria-hidden />}
     </button>

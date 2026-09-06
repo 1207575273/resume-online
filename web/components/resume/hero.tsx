@@ -1,5 +1,6 @@
 import { ArrowUpRight } from "lucide-react";
 import { AuroraField } from "@/components/resume/aurora-field";
+import { HeroParallax } from "@/components/resume/hero-parallax";
 import { PrintButton } from "@/components/resume/print-button";
 import type { ResumeProfile } from "@/lib/resume-types";
 
@@ -21,10 +22,10 @@ function firstSentences(summary: string, count = 2): string {
 export function Hero({ profile, versionNumber, versionLabel }: HeroProps) {
   return (
     <header className="hero-shell" id="top">
-      <AuroraField />
-      <div className="hero-glow" />
+      <HeroParallax>
+        <AuroraField />
 
-      <div className="relative z-10 mx-auto max-w-[880px] px-6 text-center">
+        <div className="hero-content relative z-10 mx-auto max-w-[880px] px-6 text-center">
         <p
           className="animate-in fade-in duration-1000 fill-mode-both text-sm text-[var(--text-dim)]"
           style={{ animationDelay: "80ms" }}
@@ -33,21 +34,34 @@ export function Hero({ profile, versionNumber, versionLabel }: HeroProps) {
         </p>
 
         <h1
-          className="animate-in fade-in slide-in-from-bottom-6 duration-1000 fill-mode-both mt-5 text-[clamp(3.4rem,9vw,5.6rem)] leading-none font-bold tracking-tight"
+          className="animate-in fade-in slide-in-from-bottom-6 duration-1000 fill-mode-both mt-5 text-[clamp(3.4rem,9vw,5.6rem)] leading-none font-bold tracking-normal"
           style={{ animationDelay: "160ms" }}
         >
           {profile.name}
         </h1>
 
         <p
-          className="animate-in fade-in slide-in-from-bottom-6 duration-1000 fill-mode-both mt-6 text-xl text-[var(--text-dim)] md:text-2xl"
+          className="animate-in fade-in slide-in-from-bottom-6 duration-1000 fill-mode-both mt-6 text-xl font-medium text-[var(--text)] md:text-2xl"
           style={{ animationDelay: "280ms" }}
         >
           {profile.headline}
         </p>
 
+        {profile.tags && profile.tags.length > 0 && (
+          <div
+            className="animate-in fade-in slide-in-from-bottom-4 duration-1000 fill-mode-both mt-5 flex flex-wrap items-center justify-center gap-2"
+            style={{ animationDelay: "360ms" }}
+          >
+            {profile.tags.map((tag) => (
+              <span key={tag} className={`hero-tag ${/¥/.test(tag) ? "hero-tag-hot" : ""}`}>
+                {tag}
+              </span>
+            ))}
+          </div>
+        )}
+
         <p
-          className="animate-in fade-in duration-1000 fill-mode-both mx-auto mt-6 max-w-[34em] leading-relaxed text-[var(--text-dim)]/80"
+          className="animate-in fade-in duration-1000 fill-mode-both mx-auto mt-6 max-w-[34em] leading-relaxed text-[var(--text-dim)]"
           style={{ animationDelay: "400ms" }}
         >
           {firstSentences(profile.summary)}
@@ -59,7 +73,7 @@ export function Hero({ profile, versionNumber, versionLabel }: HeroProps) {
         >
           <a
             href={`mailto:${profile.email}`}
-            className="inline-flex items-center gap-1.5 rounded-full bg-[var(--accent)] px-5 py-2 text-[15px] font-medium text-white transition-opacity duration-200 hover:opacity-85"
+            className="inline-flex items-center gap-1.5 rounded-full bg-[var(--accent-solid)] px-6 py-2.5 text-[15px] font-medium text-white transition-opacity duration-200 hover:opacity-85"
           >
             联系我
           </a>
@@ -71,7 +85,7 @@ export function Hero({ profile, versionNumber, versionLabel }: HeroProps) {
                 href={link.url}
                 target="_blank"
                 rel="noreferrer noopener"
-                className="inline-flex items-center gap-1 rounded-full border border-[var(--hairline)] px-5 py-2 text-[15px] text-[var(--text-dim)] transition-colors duration-200 hover:border-[var(--text-dim)] hover:text-[var(--text)]"
+                className="inline-flex items-center gap-1 rounded-full border border-[var(--hairline)] px-5 py-2.5 text-[15px] text-[var(--text-dim)] transition-colors duration-200 hover:border-[var(--text-dim)] hover:text-[var(--text)]"
               >
                 {link.label.split(" ")[0]}
                 <ArrowUpRight className="size-3.5" aria-hidden />
@@ -81,13 +95,14 @@ export function Hero({ profile, versionNumber, versionLabel }: HeroProps) {
         </div>
 
         <p
-          className="animate-in fade-in duration-1000 fill-mode-both mt-14 text-[13px] text-[var(--text-dim)]/50"
+          className="animate-in fade-in duration-1000 fill-mode-both mt-14 text-[13px] text-[var(--text-dim)]"
           style={{ animationDelay: "680ms" }}
         >
           向下滚动查看经历与项目
-          <span className="ml-2 inline-block animate-bounce" aria-hidden>↓</span>
+          <span className="ml-2 inline-block" aria-hidden>↓</span>
         </p>
-      </div>
+        </div>
+      </HeroParallax>
     </header>
   );
 }

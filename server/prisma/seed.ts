@@ -18,12 +18,55 @@ const SAMPLE_CONTENT: unknown = {
       { label: "GitHub", url: "https://github.com/codeyang" },
       { label: "博客", url: "https://blog.codeyang.dev" },
     ],
+    tags: ["AI 原生人才", "AI 全栈人才"],
   },
   skillGroups: [
-    { name: "语言与运行时", skills: ["TypeScript", "Node.js 22", "SQL", "Bash"] },
-    { name: "前端", skills: ["React 19", "Next.js 16", "Tailwind CSS 4", "shadcn/ui"] },
-    { name: "后端与数据", skills: ["REST API 设计", "Prisma 7", "PostgreSQL", "Redis"] },
-    { name: "工程与交付", skills: ["pnpm monorepo", "Docker / Compose", "Nginx", "GitHub Actions"] },
+    {
+      name: "语言与运行时",
+      skills: [
+        { name: "TypeScript", level: 88 },
+        { name: "Node.js 22", level: 90 },
+        { name: "SQL", level: 85 },
+        { name: "Bash", level: 75 },
+      ],
+    },
+    {
+      name: "AI 工作台",
+      note: "自费 Claude Code 投入 ¥30,000+ · 7×24 AI 结对开发",
+      skills: [
+        { name: "Claude Code", level: 97 },
+        { name: "Cursor", level: 95 },
+        { name: "ChatGPT", level: 90 },
+        { name: "GitHub Copilot", level: 85 },
+      ],
+    },
+    {
+      name: "前端",
+      skills: [
+        { name: "React 19", level: 88 },
+        { name: "Next.js 16", level: 90 },
+        { name: "Tailwind CSS 4", level: 85 },
+        { name: "shadcn/ui", level: 80 },
+      ],
+    },
+    {
+      name: "后端与数据",
+      skills: [
+        { name: "REST API 设计", level: 90 },
+        { name: "Prisma 7", level: 85 },
+        { name: "PostgreSQL", level: 85 },
+        { name: "Redis", level: 80 },
+      ],
+    },
+    {
+      name: "工程与交付",
+      skills: [
+        { name: "pnpm monorepo", level: 85 },
+        { name: "Docker / Compose", level: 88 },
+        { name: "Nginx", level: 80 },
+        { name: "GitHub Actions", level: 78 },
+      ],
+    },
   ],
   experiences: [
     {

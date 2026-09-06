@@ -62,26 +62,29 @@ function StatNumber({ stat, delay }: { stat: Stat; delay: number }) {
   }, [stat.value, delay]);
 
   return (
-    <span ref={ref} className="stat-number aurora-text">
-      {display.toLocaleString("zh-Hans-CN")}
+    <span ref={ref} className="stat-number aurora-text" aria-hidden="true">
+      {display.toLocaleString("zh-Hans-CN", { useGrouping: false })}
       <span className="text-[0.5em] font-semibold">{stat.suffix}</span>
     </span>
   );
 }
 
-/** Keynote 数字带：简历里最硬的四个数字 */
+/** 关键数字带：移动 2×2、桌面 1×4；发丝分隔线由 gap-px 网格精确绘制 */
 export function StatBand() {
   return (
     <section aria-label="关键数字" className="border-y border-[var(--hairline)]">
-      <div className="mx-auto grid max-w-[1080px] grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="mx-auto grid max-w-[1080px] grid-cols-2 gap-px bg-[var(--hairline)] lg:grid-cols-4">
         {STATS.map((stat, index) => (
           <div
             key={stat.label}
-            className="px-6 py-10 sm:py-12 [&:not(:last-child)]:border-b sm:[&:nth-child(odd)]:border-r sm:[&:nth-child(-n+2)]:border-b lg:[&:not(:last-child)]:border-r lg:[&:not(:last-child)]:border-b-0"
+            aria-label={`${stat.value}${stat.suffix}，${stat.label}`}
+            className="bg-[var(--bg)] px-5 py-8 sm:px-6 sm:py-12"
           >
             <Reveal delay={index * 90}>
               <StatNumber stat={stat} delay={index * 120} />
-              <p className="stat-label">{stat.label}</p>
+              <p className="stat-label" aria-hidden="true">
+                {stat.label}
+              </p>
             </Reveal>
           </div>
         ))}
