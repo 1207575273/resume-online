@@ -1,0 +1,19 @@
+{
+  "name": "codeyang-resume-online",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@11.25.0",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "node script/dev.mjs",
+    "build": "pnpm -r build",
+    "db:migrate": "pnpm --filter @resume/server exec prisma migrate dev",
+    "db:deploy": "pnpm --filter @resume/server exec prisma migrate deploy",
+    "db:seed": "pnpm --filter @resume/server exec tsx prisma/seed.ts",
+    "deploy:local": "./deploy/deploy.sh local",
+    "deploy:prod": "./deploy/deploy.sh prod",
+    "test:e2e": "pnpm --filter @resume/e2e test"
+  }
+}

@@ -1,0 +1,48 @@
+// 数据模型：简历版本管理
+// Resume        —— 一份简历（slug 唯一标识，如 codeyang）
+// ResumeVersion —— 不可变内容快照，一个版本一行；发布指针在 Resume 上指向对外版本
+
+datasource db {
+  provider = "postgresql"
+}
+
+generator prismaClient {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+model Resume {
+  id        String   @id @default(cuid())
+  slug      String   @unique
+  title     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  versions ResumeVersion[] @relation("ResumeVersions")
+
+  // 发布指针：当前对外暴露的版本（指向的版本 status = published）
+  publishedVersion   ResumeVersion? @relation("ResumePublished", fields: [publishedVersionId], references: [id], onDelete: SetNull)
+  publishedVersionId String?        @unique
+
+  @@map("resumes")
+}
+
+model ResumeVersion {
+  id      String   @id @default(cuid())
+  resume  Resume   @relation("ResumeVersions", fields: [resumeId], references: [id], onDelete: Cascade)
+  resumeId String
+  number  Int // 版本号，同一份简历内自增，从 1 开始
+  content Json // 整份简历内容的不可变快照（结构契约见 domain/resume/resume-content.ts）
+  label   String? // 人类可读标签，如 "2026 秋"
+  status  String   @default("draft") // draft | published | archived（迁移规则在 domain 层）
+  note    String? // 保存版本时的备注（改了什么）
+  createdAt  DateTime  @default(now())
+  publishedAt DateTime?
+
+  // 虚拟反向导航：不产生数据库列，仅供 Prisma 关系定义
+  publishedOn Resume? @relation("ResumePublished")
+
+  @@unique([resumeId, number])
+  @@index([resumeId, status])
+  @@map("resume_versions")
+}

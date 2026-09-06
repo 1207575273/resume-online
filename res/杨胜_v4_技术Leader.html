@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>杨胜 - 技术Leader</title>
+<style>
+  @page { size: A4; margin: 10mm 14mm; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {line-height: 1.7; color: #1e1e2e; background: #fff; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .page { max-width: 210mm; margin: 0 auto; padding: 10mm 14mm; }
+  a { text-decoration: none; }
+
+  /* Header */
+  .hd { display: flex; justify-content: space-between; align-items: flex-start; padding-bottom: 12px; border-bottom: 3px solid; border-image: linear-gradient(90deg,#c2410c,#ea580c,#fb923c) 1; margin-bottom: 8px; }
+  .hd-name { font-size:36px; font-weight: 800; color: #431407; letter-spacing: 4px; }
+  .hd-sub { font-size:16px; color: #c2410c; font-weight: 600; margin-top: 2px; }
+  .hd-r { text-align: right; font-size:12.5px; color: #374151; line-height: 1.8; min-width: 210px; flex-shrink: 0; }
+  .hd-r a { color: #c2410c; }
+  .hd-r .edu { font-size:12px; color: #374151; }
+  /* Header Description (full width below header) */
+  .hd-desc { font-size:14px; color: #1f2937; background: linear-gradient(90deg,#fff7ed,#fffbf5); padding: 8px 12px; border-radius: 4px; line-height: 1.65; border-left: 3px solid #c2410c; margin-bottom: 4px; }
+  .hd-tags { display: flex; gap: 5px; flex-wrap: nowrap; margin-bottom: 8px; }
+  .hd-tags .tag {font-size:10px; font-weight: 600; letter-spacing: 0; padding: 2px 7px; border-radius: 12px; background: #fff7ed; color: #9a3412; border: 1px solid #fed7aa;  white-space: nowrap;}
+  
+  /* Section */
+  .sc { margin-bottom: 10px; }
+  .sc-t { font-size:16px; font-weight: 700; padding-left: 10px; border-left: 4px solid; color: #9a3412; letter-spacing: 1.5px; padding-bottom: 2px; border-bottom: none; margin-bottom: 4px; }
+
+  /* Career Path */
+  .cp { display: flex; gap: 8px; margin-bottom: 4px; align-items: stretch; }
+  .cp-step { flex: 1;}
+  .cp-step:last-child::after { content: ''; }
+  .cp-num { font-size:12px; color: #c2410c; font-weight: 700; }
+  .cp-title { font-size:13px; font-weight: 700; color: #431407; margin: 2px 0; }
+  .cp-desc { font-size:12px; color: #4b5563; line-height: 1.4; }
+
+  /* Skills */
+  .sk-table { width: 100%; border-collapse: collapse; } .sk-table th, .sk-table td { padding: 3px 6px; vertical-align: top; }
+  .sk-table th {font-size:13px; border-bottom: 1px solid #fed7aa; width: 90px; }
+  .sk-table td {font-size:12px; color: #1f2937; border-bottom: 1px solid #fffbf5; }
+  .sk-table .sk-cap { font-size:11.5px; color: #4b5563; }
+  .sk-hi { background: #fef3c7; padding: 0 3px; border-radius: 2px; font-weight: 600; color: #92400e; }
+
+  /* Open Source Card */
+  .os { background: #fffbf5; border: 1px solid #fde0c0; border-radius: 6px; padding: 10px 12px; margin-bottom: 4px; }
+  .os-h { display: flex; justify-content: space-between; align-items: baseline; }
+  .os-n { font-size:16px; font-weight: 700; color: #431407; }
+  .os-m { font-size:11.5px; color: #6b7280; }
+  .os-d { font-size:14px; color: #4b5563; margin: 3px 0 5px; }
+  .os-ul { padding-left: 16px; font-size:13px; color: #1f2937; }
+  .os-ul li { margin-bottom: 2px; }
+
+  /* Experience */
+  .ex { margin-bottom: 10px; }
+  .ex-h { display: flex; justify-content: space-between; align-items: baseline; }
+  .ex-co { font-size:18px; font-weight: 700; color: #431407; }
+  .ex-p { font-size:13px; color: #6b7280; }
+  .ex-role { font-size:14px; color: #4b5563; margin: 2px 0 5px; }
+  .ex-sum { font-size:14px; color: #1f2937; background: linear-gradient(90deg,#fff7ed,#fffbf5); padding: 6px 10px; border-left: 3px solid #ea580c; border-radius: 0 4px 4px 0; margin-bottom: 6px; line-height: 1.65; }
+  .ex-blk { margin-bottom: 6px; }
+  .ex-bt { font-size:15px; font-weight: 700; padding-bottom: 2px; border-bottom: 1px dashed #e5e7eb; display: inline-block; }
+  .ac { color: #c2410c; }
+  .ex-bg { font-size:13.5px; color: #374151; margin-bottom: 4px; line-height: 1.5; padding-left: 8px; border-left: 2px solid #d1d5db;  }
+  .ex-tg { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 4px; }
+  .ex-tgi { padding: 2px 8px; background: #f1f5f9; color: #374151; border-radius: 3px; font-size:11px; font-weight: 500; }
+  .ex-ul { padding-left: 16px; font-size:14px; color: #1f2937; }
+  .ex-ul li { margin-bottom: 4px; line-height: 1.55; }
+  .ex-ul b { color: #431407; }
+  .ex-result { font-size:12.5px; color: #1f2937; background: #fff7ed; padding: 4px 10px; border-radius: 4px; margin-top: 4px; }
+  .ex-result b { color: #c2410c; }
+
+  /* Output */
+  .ou { padding-left: 16px; font-size:14px; color: #1f2937; }
+  .ou li { margin-bottom: 3px; }
+  .ou b { color: #431407; }
+
+  /* Footer */
+  .ft {font-size:14px; color: #1f2937; padding: 10px 0; border-top: 2px solid #fed7aa; margin-top: 6px; }
+  .ft-l { font-weight: 700; color: #9a3412; }
+  /* ===== 分页控制 ===== */
+  /* 项目经历块、公司概述、结果卡片、成长路径、技能行、表格行、header：不允许内部切割 */
+  .ex-blk, .ex-sum, .ex-result, .cp, .sk-row, tr, .hd, .hd-desc, .hd-tags {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+  /* 公司大块（.ex）和section（.sc）允许跨页，只保护内部小块 */
+  .ex, .sc {
+    break-inside: auto;
+    page-break-inside: auto;
+  }
+  /* 项目子标题、公司header不要和后面内容分开 */
+  .ex-hd, .ex-bt, .ex-co {
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+  /* 避免section标题单独留在页尾 */
+  .sc-t {
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+
+
+
+  @media print { .page { padding: 0; } }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ========== HEADER ========== -->
+  <div class="hd">
+    <div>
+      <div class="hd-name">杨 胜</div>
+      <div class="hd-sub">技术Leader · 架构师 · AI工程实战 · 开源作者</div>
+      </div>
+    <div class="hd-r">
+      27岁 | 6年后端 | 2年带组 | <b>PMP认证</b><br>
+      17764199296<br>
+      yang1207575273@163.com<br>
+      <a href="https://github.com/1207575273">github.com/1207575273</a><br>
+      <span class="edu">本科 · 武昌工学院 · 2021全日制（专升本）</span><br>
+      <span class="edu">专科 · 湖北科技职业学院 · 2019</span>
+    </div>
+  </div>
+
+  <div class="hd-desc">技术出身的管理者 + 6年Java架构功底 + AI Agent实战 + 开源作者。<br><br>4年讯飞体系支撑业务2.1亿→9亿增长，管理7人技术组，30+项目协调，3名工程师培养。加入AI赛道后主导K8s迁移和Agent系统建设，跨团队推动容器化落地。用技术解决业务问题，用流程保障交付质量。Java/Python/TypeScript/Rust多语言全栈落地。</div>
+  <div class="hd-tags"><span class="tag">技术团队管理</span>
+        <span class="tag">架构决策</span>
+        <span class="tag">AI Agent实战</span>
+        <span class="tag">PMP认证</span>
+        <span class="tag">多语言全栈</span>
+        <span class="tag">K8s生产迁移</span>
+        <span class="tag">开源作者</span></div>
+
+  <!-- ==========  ========== -->
+  <div class="sc">
+    <div class="sc-t">技术成长路径</div>
+    <div class="cp">
+      <div class="cp-step">
+        <div class="cp-num">PHASE 1 · 2021-2025</div>
+        <div class="cp-title">技术骨干 · 夯实基础</div>
+        <div class="cp-desc">4年讯飞体系，从开发者成长为7人技术组协调者，Spring Boot/Dubbo/MyBatis框架级理解。主导单体→Dubbo2→微服务架构升级，自研数据处理框架，积累大规模系统实战经验</div>
+      </div><div style="display:flex;align-items:center;font-size:18px;font-weight:700;color:#ea580c;margin:0 2px">▸</div><div class="cp-step"><div class="cp-num">PHASE 2 · 2025-2026</div>
+        <div class="cp-title">管理实战 · AI赛道</div>
+        <div class="cp-desc">加入AI赛道，主导架构升级+K8s迁移+Agent开发。跨团队协作推动容器化落地，教运维学K8s，体现技术管理的横向推动力</div>
+      </div><div style="display:flex;align-items:center;font-size:18px;font-weight:700;color:#ea580c;margin:0 2px">▸</div><div class="cp-step"><div class="cp-num">PHASE 3 · 持续进化</div>
+        <div class="cp-title">全栈Leader · 持续进化</div>
+        <div class="cp-desc">多语言全栈落地能力（Java/Python/TS/Rust），开源AI编程工具作者。技术判断力+管理推动力的复合优势</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== SKILLS ========== -->
+  <div class="sc">
+    <div class="sc-t">专业技能</div>
+    <table class="sk-table">
+      <tr>
+        <th>AI / Agent</th>
+        <td><span class="sk-hi">LangChain/LangGraph 早期核心开发</span> · MCP协议 · RAG · Prompt Engineering · Agent评测体系<br><span class="sk-cap">四层拦截架构（invoke/ainvoke/stream/astream）· Kafka+Flink五层可观测体系 · AI2GUI</span></td>
+      </tr>
+      <tr>
+        <th>架构设计</th>
+        <td>微服务架构 · Dubbo 2→3 · K8s · Nacos · 分布式系统 · 领域驱动设计<br><span class="sk-cap">设计原则：不停机 · 可回滚 · 最小改动 · 灰度验证</span></td>
+      </tr>
+      <tr>
+        <th>Java后端</th>
+        <td>Java SE/EE · JUC并发 · Spring Boot/Cloud · MyBatis-Plus · 设计模式<br><span class="sk-cap">自研PipeLineValve责任链框架 · ZX-Task消息框架（推广为公司标准组件）</span></td>
+      </tr>
+      <tr>
+        <th>数据架构</th>
+        <td>MySQL · MongoDB · Redis · ElasticSearch · Sharding-JDBC分库分表 · Kafka · Flink · MaxCompute<br><span class="sk-cap"><b>TB级</b>数据水平分片（查询2s→500ms），Kafka+Flink实时采集链路，MaxCompute离线分析，SkyWalking全链路监控</span></td>
+      </tr>
+      <tr>
+        <th>多语言</th>
+        <td>Java（主干·6年）· Python（Agent/大数据·1年+）· TypeScript/Node（CCode开源项目）· Rust（系统工具·Tauri v2）<br><span class="sk-cap">按场景选型：后端Java · AI层Python · 工具链TypeScript · 系统级Rust</span></td>
+      </tr>
+      <tr>
+        <th>前端</th>
+        <td>Vue2（源码级）· Vue3 · TypeScript · React · Ink · Tailwind CSS<br><span class="sk-cap">非核心技能但具备全栈落地能力，独立搭建前端工程化体系</span></td>
+      </tr>
+      <tr>
+        <th>基础设施</th>
+        <td>K8s生产部署 · Docker · Nginx · CI/CD · Linux Shell · SkyWalking<br><span class="sk-cap">全栈服务容器化部署 · 与运维协作推进K8s运维体系</span></td>
+      </tr>
+      <tr>
+        <th>AI工具</th>
+        <td>Cursor 深度用户（2024年起）· Claude Code 深度用户（2025.03起）<br><span class="sk-cap">不仅是使用者，更是构建者——自研了类Claude Code的开源多模型AI编程CLI</span></td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- ========== OPEN SOURCE ========== -->
+  <div style="break-before:page;page-break-before:always"></div>
+  <div class="sc">
+    <div class="sc-t">开源项目</div>
+    <div class="os">
+      <div class="os-h">
+        <span class="os-n">CCode — 开源多模型AI编程CLI助手</span>
+        <span class="os-m">从0到1独立构建 · 持续迭代8个版本 · 453自动化测试 · <a href="https://github.com/1207575273/CCode" style="color:#c2410c">GitHub</a></span>
+      </div>
+      <div class="os-d">类Claude Code的终端AI编程工具，兼容Claude Code生态。自研AgentLoop引擎（AsyncGenerator事件流），适配Claude/GPT-4o/GLM/DeepSeek/Ollama等6+模型厂商，支持MCP协议、SubAgent并行执行、三层Skill生态、上下文压缩与会话持久化。技术栈：TypeScript + Ink 5 + React 18 | Vite + Tailwind | libsql + Vitest</div>
+    </div>
+    <div class="os">
+      <div class="os-h">
+        <span class="os-n">sip-cc — 轻量跨平台截屏+GIF录制工具</span>
+        <span class="os-m">Rust 59% + TypeScript 25% · Tauri v2 · Win/Mac/Linux · MIT · <a href="https://github.com/1207575273/sip-cc" style="color:#c2410c">GitHub</a></span>
+      </div>
+      <div class="os-d">发现Snipaste无GIF录制的市场空白→自己用Rust造。xcap屏幕捕获 + gif crate流式编码 + rdev全局快捷键 + arboard剪贴板 + 系统托盘集成，CI/CD自动构建发布三端安装包</div>
+    </div>
+  </div>
+
+  <!-- ========== EXPERIENCE 1: 指数引力 ========== -->
+  <div class="sc">
+    <div class="sc-t">职业履历</div>
+
+    <div class="ex">
+      <div class="ex-h">
+        <span class="ex-co">深圳指数引力（红杉资本投资）· <a href="https://lessie.ai/" style="color:#c2410c">Lessie AI</a></span>
+        <span class="ex-p">2025.07 — 2026.04</span>
+      </div>
+      <div class="ex-role">核心架构师 / Agent研发</div>
+      <div class="ex-sum">
+        Lessie AI是一个完整的AI Agent搜索系统，链路覆盖：Prompt理解→任务规划→工具路由（Primary/Secondary/Fallback）→多源召回→结果治理（Review-Driven Rerank）→评测闭环。负责工程基建层：五层全链路可观测体系（LLM/Tool/Business/API/Trace）、评测平台、AI2GUI（JSON Schema驱动的AI动态UI生成方案）。多模型分级选型：关键决策Claude Opus 4.6（4级Provider容错）/ 批量Review用Gemini Flash / 辅助任务Haiku，按复杂度匹配精度与成本。同时主导Java服务架构从单体物理机经Dubbo2演进到Dubbo3+K8s容器化部署。
+      </div>
+
+      <div class="ex-blk">
+        <div class="ex-bt"><span class="ac">五层全链路可观测体系</span> — <b>日均2亿+Token</b> · 5个Kafka Topic · 与LangSmith互补</div>
+        <div class="ex-bg">Lessie AI<b>日均消耗2亿+Token</b>，LangSmith擅长开发调试和Prompt优化，但无法覆盖生产侧的外部API成本、业务指标和全链路追踪。需要一套与LangSmith互补的五层可观测体系。</div>
+        <ul class="ex-ul">
+          <li><b>五层采集</b>：LLM成本（FallbackChatModel拦截Claude Opus/Gemini Flash/Haiku多模型，safe_trace_point异常隔离）→ 工具成本（13个外部API精确到美元，如Apollo $0.0347/次）→ 业务指标（Review通过率/任务耗时）→ API成本（@api_cost声明式装饰器）→ 高级Trace（召回详情/Review双span/Checkpoint评估）</li>
+          <li><b>实时链路</b>：5个Kafka Topic分层投递，Flink实时聚合（模型/业务/时间多维度），Nacos热开关控制上报环境+黑名单模型，conversation_id→search_id→recall_task_id→review_task_id全链路贯穿</li>
+          <li><b>互补定位</b>：自建体系覆盖LangSmith无法触及的外部API成本和业务层指标；LangSmith保留用于开发调试和Few-Shot样本提取（@traceable标注全部6个节点）</li>
+          <li><b>数据闭环</b>：采集数据同时反哺Agent RAG系统（正向/负向Case），驱动评测平台和Agent优化</li>
+        </ul>
+        <div class="ex-result"><b>成果</b>：五层体系覆盖<b>日均2亿+Token</b>全链路成本与业务指标，与LangSmith形成生产+调试双轨互补；为评测平台和Agent优化提供数据基础</div>
+      </div>
+
+      <div class="ex-blk">
+        <div class="ex-bt"><span class="ac">评测平台</span> — Apex Agent评测系统</div>
+        <ul class="ex-ul">
+          <li>参与Agent评测平台开发，构建评测集体系（来源：历史真实query + 线上bad case + 人工标注高价值样本），评估Agent每次迭代是正向提升还是回归</li>
+          <li>分层评估：召回层（Recall@K/MRR）+ 排序层（Precision@K/NDCG）+ 业务层（首轮命中率/fallback率/review通过率），闭环驱动质量提升</li>
+        </ul>
+      </div>
+
+      <div class="ex-blk">
+        <div class="ex-bt"><span class="ac">架构升级</span> — 单体物理机→Dubbo2→Dubbo3→K8s <b>不停机</b>全链路演进</div>
+        <div class="ex-bg">三个Java微服务（agent/admin/payment）部署在物理机，使用Dubbo2兼容模式。需统一迁移到K8s并升级到Dubbo3，核心原则：不停机、可回滚、最小改动。</div>
+        <ul class="ex-ul">
+          <li><b>隔离策略</b>：设计group/version协议隔离（而非蓝绿部署），物理机（无group/dubbo协议/接口级注册）与K8s（group=prod/Triple协议/应用级注册）天然共存于同一Nacos</li>
+          <li><b>Profile方案</b>：独立完整prod-k8s Profile，规避Spring Cloud Nacos的ConfigDataMissingEnvironmentPostProcessor在组合profile下的加载时序问题</li>
+          <li><b>全栈迁移</b>：覆盖Java/Python/前端全栈服务，与运维协作推进K8s运维体系，教运维团队学习容器化运维</li>
+          <li><b>风控机制</b>：完整方案文档（现状→目标→Nginx割接→验证清单→回滚策略→Nacos自动清理脚本），48小时物理机并行观察+一键回滚</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ========== EXPERIENCE 2: 讯飞 ========== -->
+    <div class="ex">
+      <div class="ex-h">
+        <span class="ex-co">科大讯飞 · 百得思维</span>
+        <span class="ex-p">2021.06 — 2025.07</span>
+      </div>
+      <div class="ex-role">高级Java研发工程师（带组）· 核心系统技术负责人 · 7人技术组协调者</div>
+      <div class="ex-sum">
+        4年Java深耕期，这段经历奠定了我所有技术能力的工程基石。支撑业务<b>营收从2.1亿增长至9亿</b>，主导3次系统架构升级（单体→微服务），构建<b>年产8000万+</b>文档的渲染引擎和<b>TB级</b>数据处理平台。管理7人技术组，30+项目技术协调，建立敏捷开发流程和Code Review机制，指导3名初级工程师快速成长。为深入理解教育业务场景考取<b>高中教师资格证</b>，推动AI大模型在教育场景商业化落地，相关案例成为行业标杆。
+      </div>
+
+      <div class="ex-blk">
+        <div class="ex-bt">智学网核心渲染引擎 — <span class="ac">年产8000万+文档 · 支撑<b>2500+</b>学校 · <b>TB级</b>数据</span></div>
+        <div class="ex-bg">个性化学习报告生成的核心引擎，是整个智学网产品线的基础设施。需要解决高并发渲染、复杂模板、数据一致性和系统可观测四个核心问题。作为核心开发人员主导架构设计，并指导2名初级工程师参与项目。</div>
+        <div class="ex-tg">
+          <span class="ex-tgi">SpringBoot+Nacos</span>
+          <span class="ex-tgi">MongoDB+Redis集群</span>
+          <span class="ex-tgi">公司自研ZX-Task消息框架</span>
+          <span class="ex-tgi">wkhtmltopdf+Chrome Headless</span>
+          <span class="ex-tgi">Vue.js</span>
+          <span class="ex-tgi">SkyWalking</span>
+        </div>
+        <ul class="ex-ul">
+          <li><b>架构升级</b>：主导系统从Spring+Quartz单体架构升级到SpringBoot+Nacos微服务架构，实现异地多活部署，系统可用性从间歇性故障提升到<b>99.9%</b>，支撑业务从数百学校扩展到<b>2500+</b>学校</li>
+          <li><b>双引擎渲染</b>：设计基于wkhtmltopdf和Chrome无头浏览器的双引擎渲染架构，实现高DPI文档生成。支持MathJax数学公式、动态图表等复杂渲染场景，渲染质量提升50%</li>
+          <li><b>高并发处理</b>：构建多线程PDF批处理系统，通过公司自研ZX-Task消息框架削峰填谷（推广为公司内部标准消息组件），实现<b>峰值2000TPS</b>处理能力，系统稳定性提升<b>80%</b></li>
+          <li><b>数据一致性</b>：设计分布式锁方案解决渲染并发冲突，确保数据一致性达99.99%。多线程环境下的锁粒度设计和死锁预防是核心技术难点</li>
+          <li><b>监控体系</b>：整合SkyWalking构建全链路监控+数据埋点+预警机制，实现关键指标实时监控和告警，问题平均响应时间从小时级缩短到分钟级（缩短70%）</li>
+          <li><b>复杂模板系统</b>：设计支持动态数据注入的模板引擎，支持复杂布局、条件渲染和数据驱动样式，模板复用率显著提升，大幅降低新报告的开发成本</li>
+        </ul>
+      </div>
+
+      <div class="ex-blk">
+        <div class="ex-bt">智学网数据处理与运营管理平台 — <span class="ac"><b>TB级</b>数据 · 30+业务模块 · 100+Dubbo服务 · 自研PipeLineValve框架</span></div>
+        <div class="ex-bg">智学网个册生态的核心数据处理与运营管理平台，上游对接多个数据源采集学生多维学习数据，下游支撑个册后台管理和TFB运营的全链路业务。系统涵盖数据处理引擎、用户管理、供应链、订单处理、内容审核、权限控制、数据分析等30+业务模块，处理<b>TB级</b>数据量。</div>
+        <div class="ex-tg">
+          <span class="ex-tgi">Dubbo+Zookeeper/Nacos</span>
+          <span class="ex-tgi">MySQL+Sharding-JDBC</span>
+          <span class="ex-tgi">MongoDB分片</span>
+          <span class="ex-tgi">Redis集群</span>
+          <span class="ex-tgi">CAS+Shiro</span>
+          <span class="ex-tgi">Kafka/ELK</span>
+          <span class="ex-tgi">星火/DeepSeek大模型</span>
+          <span class="ex-tgi">自研PipeLineValve框架</span>
+        </div>
+        <ul class="ex-ul">
+          <li><b>自研数据处理框架</b>：基于责任链模式设计PipeLineValve数据处理框架，构建多层级业务处理工厂。根据不同业务特点实现多个Pipeline工厂（如成绩分析Pipeline、学情诊断Pipeline），处理逻辑模块化、标准化、可插拔</li>
+          <li><b>TB级性能优化</b>：基于Sharding-JDBC实现项目水平表分片策略，<b>查询耗时从2s+降至500ms</b>以内。结合MongoDB分片集群处理非结构化学习数据，设计冷热数据分离策略</li>
+          <li><b>统一运营架构</b>：主导个册后台与TFB运营平台的架构统一，设计30+业务模块的服务边界划分，100+Dubbo服务协调方案，集成企业微信、银联支付等15+外部系统</li>
+          <li><b>安全体系</b>：构建CAS单点登录+Shiro权限控制+数据屏蔽的三层安全架构，实现企业级安全防护</li>
+          <li><b>可视化运营</b>：开发模板可视化编辑系统和审核工作流，支持拖拽式配置和实时预览，运营效率提升<b>200%</b></li>
+          <li><b>AI能力集成</b>：与大数据平台和AI大模型（星火/DeepSeek）对接，设计稳健的能力调用框架和兜底策略，实现智能推荐和个性化分析，教育场景案例成为行业标杆</li>
+          <li><b>监控体系</b>：基于ELK+SkyWalking构建实时监控系统，云迁移中整合全链路追踪，问题定位效率提升<b>85%</b></li>
+        </ul>
+      </div>
+
+      <div class="ex-blk">
+        <div class="ex-bt"><span class="ac">团队管理与协作</span></div>
+        <ul class="ex-ul">
+          <li>7人技术小组协调者，建立敏捷开发流程和Code Review机制，项目按时交付率达98%</li>
+          <li>指导3名初级工程师快速成长，建立技术分享和人才培养机制（周分享+月复盘+项目带教），团队整体技术水平和稳定性显著提升</li>
+          <li>与产品、运营等部门协作推进需求评审，参与技术方案设计与评审，确保技术实现符合业务预期</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== OUTPUT ========== -->
+  <div class="sc">
+    <div class="sc-t">技术输出与认证</div>
+    <ul class="ou">
+      <li><b>开源</b>：CCode — 多模型AI编程CLI（TypeScript，从0到1独立构建，8个版本迭代，453自动化测试）| sip-cc — Rust+Tauri v2跨平台截屏+GIF工具</li>
+      <li><b>技术文章</b>：《从Prompt Engineering到Agent Engineering：AI系统可靠性工程的演进脉络》— 系统梳理Prompt→Agent→Harness三层架构演进，对应经典软件工程原则（分而治之、生成与验证分离、检查点恢复）</li>
+      <li><b>技术调研</b>：《MarkItDown RAG管线落地调研》— RAG文档解析层技术选型与Ingestion Pipeline方案设计</li>
+      <li><b>社区参与</b>：Spring AI 社区早期孵化成员，参与框架方向讨论与idea贡献</li>
+      <li><b>专业认证</b>：<span style="background:#fef3c7;padding:1px 4px;border-radius:2px;font-weight:700;color:#92400e">PMP项目管理专业认证</span>· 计算机三级数据库</li>
+    </ul>
+  </div>
+
+  <!-- ========== FOOTER ========== -->
+  <div class="ft">
+    <span><span class="ft-l">目标岗位</span> 技术经理 / 技术Leader</span>
+    <span><span class="ft-l">期望城市</span> 深圳 / 广州</span>
+    <span><span class="ft-l">期望薪资</span> 面议</span>
+  </div>
+
+  <div style="text-align:center;font-size:9px;color:#c0c0c0;margin-top:12px;letter-spacing:0.5px">codeYang 结合 AI 打磨生产</div>
+</div>
+</body>
+</html>

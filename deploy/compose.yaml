@@ -1,0 +1,98 @@
+# 本地全栈：db + server + web + nginx（HTTP 80）
+# 用法：./deploy/deploy.sh local   （等价 docker compose --env-file .env -f deploy/compose.yaml up -d --build）
+# 每个 service 都带 resume.* label（含中文说明），便于 Portainer / docker ps 快速区分
+name: codeyang-resume
+
+
+services:
+  db:
+    image: postgres:18-alpine
+    restart: unless-stopped
+    labels:
+      resume.project: "CodeYang 在线简历"
+      resume.repo: "codeyang-resume-online"
+      resume.service: "数据库 · PostgreSQL 18（简历版本存储）"
+      resume.layer: "数据层"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-resume}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?请在 .env 中设置 POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB:-resume}
+    volumes:
+      # PG 18+ 布局：挂父目录，数据落在 /var/lib/postgresql/18/docker（兼容未来 pg_upgrade）
+      - pgdata:/var/lib/postgresql
+    # 仅供本机开发/运维调试（仅回环地址），公网不可达
+    ports:
+      - "127.0.0.1:5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-resume} -d ${POSTGRES_DB:-resume}"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+    networks: [internal]
+
+  server:
+    build:
+      context: ..
+      dockerfile: server/Dockerfile
+    restart: unless-stopped
+    labels:
+      resume.project: "CodeYang 在线简历"
+      resume.repo: "codeyang-resume-online"
+      resume.service: "后端 API · Next.js 16（轻量 DDD + Prisma 7）"
+      resume.layer: "应用层"
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-resume}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-resume}
+      PORT: "3001"
+      INTERNAL_API_TOKEN: ${INTERNAL_API_TOKEN:-}
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      LOG_DIR: /app/logs
+      LOG_RETENTION_DAYS: ${LOG_RETENTION_DAYS:-14}
+    volumes:
+      - ../logs/server:/app/logs # pino 人类可读日志（按天轮转，保留 14 天）
+    depends_on:
+      db:
+        condition: service_healthy
+    networks: [internal]
+
+  web:
+    build:
+      context: ..
+      dockerfile: web/Dockerfile
+      args:
+        SITE_URL: ${SITE_URL:-http://localhost}
+    restart: unless-stopped
+    labels:
+      resume.project: "CodeYang 在线简历"
+      resume.repo: "codeyang-resume-online"
+      resume.service: "前端站点 · Next.js 16（SSR + SEO）"
+      resume.layer: "应用层"
+    environment:
+      RESUME_API_BASE: http://server:3001/api/v1
+      SITE_URL: ${SITE_URL:-http://localhost}
+    depends_on:
+      - server
+    networks: [internal]
+
+  nginx:
+    image: nginx:1.27-alpine
+    restart: unless-stopped
+    labels:
+      resume.project: "CodeYang 在线简历"
+      resume.repo: "codeyang-resume-online"
+      resume.service: "边缘网关 · Nginx（80/443 反向代理 + TLS 终结）"
+      resume.layer: "接入层"
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - web
+      - server
+    networks: [internal]
+
+networks:
+  internal:
+    driver: bridge
+
+volumes:
+  pgdata:

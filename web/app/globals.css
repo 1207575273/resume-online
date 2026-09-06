@@ -1,0 +1,242 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ========== 设计令牌：Keynote 深空 ========== */
+:root {
+  --bg: #f5f5f7;
+  --bg-deep: #ffffff;
+  --surface: #ffffff;
+  --surface-2: #eeeef0;
+  --text: #1d1d1f;
+  --text-dim: #6e6e73;
+  --accent: #0071e3;
+  --hairline: rgba(0, 0, 0, 0.1);
+  --nav-bg: rgba(245, 245, 247, 0.72);
+  --glass-border: rgba(0, 0, 0, 0.06);
+}
+
+.dark {
+  --bg: #050507;
+  --bg-deep: #000000;
+  --surface: #0d0d11;
+  --surface-2: #131318;
+  --text: #f5f5f7;
+  --text-dim: #86868b;
+  --accent: #2997ff;
+  --hairline: rgba(255, 255, 255, 0.09);
+  --nav-bg: rgba(5, 5, 7, 0.65);
+  --glass-border: rgba(255, 255, 255, 0.08);
+}
+
+/* 极光渐变：只给关键数字与 Hero 微光 */
+.aurora-text {
+  background: linear-gradient(105deg, #2997ff 0%, #7d5fff 48%, #bf5af2 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@theme inline {
+  --color-background: var(--bg);
+  --color-foreground: var(--text);
+  --color-dim: var(--text-dim);
+  --color-accent: var(--accent);
+  --color-hairline: var(--hairline);
+  --color-surface: var(--surface);
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
+    "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei",
+    "Noto Sans CJK SC", sans-serif;
+}
+
+@layer base {
+  * {
+    border-color: var(--hairline);
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-sans);
+    font-size: 17px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  ::selection {
+    background: rgba(41, 151, 255, 0.28);
+  }
+  a {
+    color: inherit;
+  }
+}
+
+/* ========== 玻璃导航 ========== */
+.site-nav {
+  position: fixed;
+  inset-inline: 0;
+  top: 0;
+  z-index: 50;
+  height: 52px;
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  background: transparent;
+  border-bottom: 1px solid transparent;
+  transition: background 0.4s ease, border-color 0.4s ease;
+}
+.site-nav.scrolled {
+  background: var(--nav-bg);
+  border-bottom-color: var(--glass-border);
+}
+.nav-link {
+  font-size: 13px;
+  color: var(--text-dim);
+  transition: color 0.2s ease;
+}
+.nav-link:hover {
+  color: var(--text);
+}
+
+/* ========== Hero ========== */
+.hero-shell {
+  position: relative;
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.hero-glow {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(52% 42% at 50% 46%, rgba(41, 151, 255, 0.13), transparent 70%),
+    radial-gradient(36% 30% at 68% 60%, rgba(125, 95, 255, 0.1), transparent 70%),
+    radial-gradient(30% 26% at 34% 62%, rgba(191, 90, 242, 0.07), transparent 70%);
+  pointer-events: none;
+}
+.hero-statement {
+  font-size: clamp(2.4rem, 6.2vw, 4.6rem);
+  font-weight: 700;
+  letter-spacing: -0.022em;
+  line-height: 1.18;
+}
+.hero-name {
+  font-size: clamp(1.05rem, 2vw, 1.3rem);
+  font-weight: 600;
+  color: var(--text-dim);
+  letter-spacing: 0.28em;
+  margin-left: 0.28em;
+}
+
+/* ========== 数字带 ========== */
+.stat-number {
+  font-size: clamp(2.6rem, 5.6vw, 4.2rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  font-feature-settings: "tnum";
+  font-variant-numeric: tabular-nums;
+  line-height: 1.05;
+}
+.stat-label {
+  font-size: 0.95rem;
+  color: var(--text-dim);
+  margin-top: 0.5rem;
+}
+
+/* ========== 规格（经历）========== */
+.spec-grid {
+  display: grid;
+  grid-template-columns: minmax(200px, 5fr) 8fr;
+  gap: 2rem 4rem;
+}
+.spec-time {
+  font-size: 0.9rem;
+  color: var(--text-dim);
+  font-feature-settings: "tnum";
+}
+
+/* ========== 项目瓷片 ========== */
+.tile {
+  position: relative;
+  border-radius: 24px;
+  background: var(--surface);
+  overflow: hidden;
+  transition: transform 0.5s cubic-bezier(0.2, 0.6, 0.2, 1);
+}
+.tile:hover {
+  transform: translateY(-4px);
+}
+.tile-art {
+  aspect-ratio: 16 / 8.5;
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.tile:hover .tile-art .art-accent {
+  opacity: 1;
+}
+.tile-art .art-accent {
+  opacity: 0.66;
+  transition: opacity 0.5s ease;
+}
+
+/* ========== 滚动 reveal（一次性、克制）========== */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(26px);
+  transition: opacity 0.9s cubic-bezier(0.2, 0.65, 0.25, 1),
+    transform 0.9s cubic-bezier(0.2, 0.65, 0.25, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+[data-reveal].revealed {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  [data-reveal] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .tile,
+  .tile:hover {
+    transform: none;
+    transition: none;
+  }
+}
+
+/* ========== 打印 ========== */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  .hero-shell {
+    min-height: auto;
+    padding: 24px 0;
+  }
+  body {
+    background: #fff;
+    color: #000;
+    font-size: 13px;
+  }
+  .aurora-text {
+    color: #000;
+    -webkit-text-fill-color: #000;
+  }
+  .tile,
+  .spec-grid {
+    break-inside: avoid;
+  }
+  [data-reveal] {
+    opacity: 1;
+    transform: none;
+  }
+}
