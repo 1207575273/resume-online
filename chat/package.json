@@ -1,0 +1,19 @@
+{
+  "name": "@resume/chat",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "AI 简历问答服务：每会话一个常驻 claude -p 子进程（stdio + stream-json），AskUser 人在环协议，全量会话入库",
+  "scripts": {
+    "dev": "node --watch src/server.mjs",
+    "start": "node src/server.mjs",
+    "test": "node test/run-tests.mjs"
+  },
+  "dependencies": {
+    "pg": "^8.13.0",
+    "ws": "^8.18.0"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

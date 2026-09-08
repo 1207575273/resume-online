@@ -35,18 +35,8 @@ export function EducationSection({ education }: { education: EducationItem[] }) 
   );
 }
 
-/** 页脚：contentinfo 地标（渲染在 main 之外） */
-export function SiteFooter({
-  profile,
-  versionNumber,
-  versionLabel,
-  updatedAt,
-}: {
-  profile: ResumeProfile;
-  versionNumber: number;
-  versionLabel: string | null;
-  updatedAt: string;
-}) {
+/** 页脚：contentinfo 地标（渲染在 main 之外）；对招聘方只给更新时间，不泄内部版本号 */
+export function SiteFooter({ profile, updatedAt }: { profile: ResumeProfile; updatedAt: string }) {
   const year = new Date().getFullYear();
 
   return (
@@ -74,9 +64,7 @@ export function SiteFooter({
           ))}
         </div>
         <p className="text-[var(--text-dim)]">
-          © {year} {profile.name} · 内容版本 v{versionNumber}
-          {versionLabel ? `（${versionLabel}）` : ""} · 更新于{" "}
-          {new Date(updatedAt).toLocaleDateString("zh-CN")}
+          © {year} {profile.name} · 更新于 {new Date(updatedAt).toLocaleDateString("zh-CN")}
         </p>
       </div>
     </footer>

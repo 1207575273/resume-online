@@ -4,22 +4,10 @@
  * 用法: node .claude/skills/deploy/scripts/verify.mjs
  */
 import { spawnSync } from "node:child_process";
-import { existsSync, readFileSync } from "node:fs";
-import { dirname, join } from "node:path";
-import { fileURLToPath } from "node:url";
+import { existsSync } from "node:fs";
+import { join } from "node:path";
+import { ROOT, composeFileArgs, resolvePublicBase } from "./lib.mjs";
 
-/** 从 .env 读生产域名：HTTPS 栈的默认验证入口（IP+80 会被 301 到 HTTPS） */
-function resolvePublicBase() {
-  if (process.env.PUBLIC_BASE) return process.env.PUBLIC_BASE;
-  try {
-    const domain = readFileSync(join(ROOT, ".env"), "utf8").match(/^DOMAIN=(.+)$/m)?.[1]?.trim();
-    if (domain && !domain.includes("example.com")) return `https://${domain}`;
-  } catch {
-    /* .env 缺失时走下面的兜底 */
-  }
-  return "http://8.218.79.152";
-}
-const ROOT = join(dirname(fileURLToPath(import.meta.url)), "../../../..");
 const PUBLIC_BASE = resolvePublicBase();
 console.log(`目标: ${PUBLIC_BASE}`);
 
@@ -47,15 +35,12 @@ console.log("--- 部署验证 ---");
 
 await check("容器服务在线", () => {
   if (!existsSync(join(ROOT, ".env"))) return false;
-  // 生产栈（含 prod 叠加 + certbot）5 个；本地栈 4 个
-  const hasProdOverlay = existsSync(join(ROOT, "deploy/nginx/runtime/default.conf"));
-  const composeFiles = hasProdOverlay
-    ? ["-f", "deploy/compose.yaml", "-f", "deploy/compose.prod.yaml"]
-    : ["-f", "deploy/compose.yaml"];
-  const expected = hasProdOverlay ? 5 : 4;
+  // 生产栈（prod 叠加 + certbot + chat）6 个；本地栈（无 nginx/certbot）5 个
+  const hasProdOverlay = composeFileArgs().length > 2;
+  const expected = hasProdOverlay ? 6 : 5;
   const result = spawnSync(
     "docker",
-    ["compose", "--env-file", ".env", ...composeFiles, "ps", "-a", "--status", "running", "-q"],
+    ["compose", "--env-file", ".env", ...composeFileArgs(), "ps", "-a", "--status", "running", "-q"],
     { cwd: ROOT, encoding: "utf8" },
   );
   return result.stdout.trim().split("\n").filter(Boolean).length >= expected;

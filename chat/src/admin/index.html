@@ -1,0 +1,385 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0b0e14">
+<title>简历问答 · 管理后台</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='42' fill='%235b9dff'/%3E%3C/svg%3E">
+<style>
+  :root{
+    --bg:#0b0e14;
+    --panel:#121722;
+    --panel-2:#1a2130;
+    --field:#0e131d;
+    --line:#242d40;
+    --line-soft:#1a2130;
+    --text:#e7eaf2;
+    --muted:#98a0b3;
+    --accent:#5b9dff;
+    --green:#4cc38a;
+    --yellow:#e0b341;
+    --gray:#98a0b3;
+    --red:#ef6b5e;
+  }
+  *{box-sizing:border-box}
+  [hidden]{display:none!important}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font:14px/1.6 system-ui,-apple-system,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    min-height:100vh;
+  }
+
+  /* ---------- 顶栏 ---------- */
+  .topbar{
+    position:sticky;top:0;z-index:10;
+    display:flex;align-items:center;gap:18px;
+    min-height:54px;padding:0 20px;
+    background:rgba(11,14,20,.93);
+    backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--line);
+    flex-wrap:wrap;
+  }
+  .brand{font-weight:700;font-size:15px;letter-spacing:.5px;white-space:nowrap}
+  .brand .brand-sub{color:var(--muted);font-weight:400}
+  .tabs{display:flex;gap:2px;height:54px}
+  .tab{
+    background:none;border:none;color:var(--muted);
+    padding:0 16px;font:inherit;cursor:pointer;
+    border-bottom:2px solid transparent;
+  }
+  .tab:hover{color:var(--text)}
+  .tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+  .top-actions{margin-left:auto;display:flex;align-items:center;gap:10px}
+  .token-state{font-size:12.5px;color:var(--muted);white-space:nowrap}
+  .token-state .st-dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:6px;vertical-align:middle}
+  .token-state.on .st-dot{background:var(--green)}
+  .token-state.off .st-dot{background:var(--gray);opacity:.55}
+
+  /* ---------- 通用控件 ---------- */
+  button{
+    background:var(--panel-2);color:var(--text);
+    border:1px solid var(--line);border-radius:8px;
+    padding:6px 14px;cursor:pointer;font:inherit;
+    transition:border-color .12s,color .12s,background .12s;
+  }
+  button:hover:not(:disabled){border-color:var(--accent)}
+  button:disabled{opacity:.45;cursor:not-allowed}
+  .btn-primary{background:var(--accent);border-color:var(--accent);color:#0b0e14;font-weight:650}
+  .btn-primary:hover:not(:disabled){background:#78acff;color:#0b0e14}
+  .btn-ghost{background:none;border-color:transparent;color:var(--muted);padding:6px 10px}
+  .btn-ghost:hover:not(:disabled){color:var(--text);border-color:var(--line)}
+  input[type=text],input[type=password],input[type=search]{
+    background:var(--field);border:1px solid var(--line);color:var(--text);
+    border-radius:8px;padding:7px 12px;font:inherit;outline:none;
+    transition:border-color .12s;
+  }
+  input:focus{border-color:var(--accent)}
+  input::placeholder{color:#5c6478}
+  .link{color:var(--accent);cursor:pointer;text-decoration:none}
+  .link:hover{text-decoration:underline}
+
+  main{max-width:1180px;margin:0 auto;padding:22px 20px 64px}
+
+  /* ---------- 工具栏 ---------- */
+  .toolbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+  .toolbar .grow{flex:1}
+  .switch{display:inline-flex;align-items:center;gap:7px;color:var(--muted);cursor:pointer;user-select:none}
+  .switch input{accent-color:var(--accent);cursor:pointer}
+  .seg{display:inline-flex;border:1px solid var(--line);border-radius:9px;overflow:hidden}
+  .seg button{border:none;border-radius:0;padding:6px 13px;color:var(--muted);background:transparent}
+  .seg button + button{border-left:1px solid var(--line)}
+  .seg button.active{background:var(--panel-2);color:var(--accent);font-weight:600}
+  .toolbar-note{color:var(--muted);font-size:12.5px}
+
+  /* ---------- 面板与表格 ---------- */
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+  .panel-title{
+    margin:0;padding:13px 18px;font-size:13.5px;font-weight:650;color:var(--text);
+    border-bottom:1px solid var(--line-soft);
+  }
+  .table-wrap{overflow-x:auto}
+  table{width:100%;border-collapse:collapse;font-size:13.5px}
+  th{
+    text-align:left;color:var(--muted);font-weight:550;font-size:12.5px;
+    padding:10px 14px;border-bottom:1px solid var(--line);
+    background:#0f141f;white-space:nowrap;
+  }
+  td{padding:10px 14px;border-bottom:1px solid var(--line-soft);vertical-align:middle}
+  tbody tr:last-child td{border-bottom:none}
+  tbody tr.rowlink{cursor:pointer;transition:background .12s}
+  tbody tr.rowlink:hover{background:#161d2c}
+  .num{font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
+  th.num{text-align:right}
+  .nowrap{white-space:nowrap}
+  .dim{color:var(--muted)}
+  .ellip{display:block;max-width:360px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+  /* ---------- 徽章 / 圆点 ---------- */
+  .badge{
+    display:inline-block;padding:0 9px;border-radius:999px;
+    font-size:12px;line-height:1.8;border:1px solid;white-space:nowrap;
+  }
+  .badge-high{color:var(--green);border-color:rgba(76,195,138,.5);background:rgba(76,195,138,.09)}
+  .badge-mid{color:var(--yellow);border-color:rgba(224,179,65,.5);background:rgba(224,179,65,.09)}
+  .badge-low{color:var(--muted);border-color:rgba(152,160,179,.45);background:rgba(152,160,179,.1)}
+  .badge-blue{color:var(--accent);border-color:rgba(91,157,255,.5);background:rgba(91,157,255,.09)}
+  .dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--green);margin-right:7px;vertical-align:middle}
+  .dot.off{background:var(--gray);opacity:.4}
+
+  .empty{padding:40px 16px;text-align:center;color:var(--muted);font-size:13px}
+  .empty .empty-err{color:var(--red)}
+
+  /* ---------- 分页 ---------- */
+  .pager{display:flex;align-items:center;gap:12px;margin-top:14px;color:var(--muted);font-size:13px}
+  .pager .grow{flex:1}
+  .pager button{padding:5px 13px;font-size:13px}
+
+  /* ---------- 会话详情 ---------- */
+  .detail-top{display:flex;align-items:center;gap:14px;margin-bottom:12px;flex-wrap:wrap}
+  .detail-badges{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .detail-meta{
+    display:flex;align-items:center;gap:8px 20px;flex-wrap:wrap;
+    color:var(--muted);font-size:12.5px;margin-bottom:14px;
+  }
+  .detail-meta b{color:var(--text);font-weight:600;font-variant-numeric:tabular-nums}
+  .detail-meta .meta-full{width:100%;color:#6d7488;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .detail-grid{
+    display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:16px;align-items:start;
+  }
+  @media (max-width:920px){.detail-grid{grid-template-columns:1fr}}
+
+  /* transcript 气泡 */
+  .transcript{padding:18px;display:flex;flex-direction:column;gap:14px;max-height:calc(100vh - 220px);overflow-y:auto}
+  .msg{display:flex;flex-direction:column;gap:4px;max-width:80%}
+  .msg .meta{font-size:11.5px;color:#6d7488;padding:0 4px}
+  .msg .meta b{font-weight:600}
+  .bubble{
+    padding:9px 13px;border-radius:12px;
+    white-space:pre-wrap;word-break:break-word;font-size:13.5px;
+  }
+  .msg-user{align-self:flex-end;align-items:flex-end}
+  .msg-user .bubble{background:#27466f;color:#eaf1ff;border:1px solid #33578a}
+  .msg-ai{align-self:flex-start;align-items:flex-start}
+  .msg-ai .bubble{background:var(--panel-2);border:1px solid var(--line)}
+  .msg-role-tag{display:inline-block;margin-left:8px;font-size:11px;padding:0 7px;border-radius:5px;line-height:1.7;border:1px solid rgba(91,157,255,.45);color:var(--accent)}
+  .msg-ask{align-self:stretch;max-width:100%}
+  .ask-card{
+    border:1px solid rgba(224,179,65,.5);background:rgba(224,179,65,.07);
+    border-radius:12px;padding:11px 14px;white-space:pre-wrap;word-break:break-word;
+  }
+  .ask-card .ask-q{color:var(--yellow);font-weight:600}
+  .ask-opts{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}
+  .ask-opt{
+    font-size:12px;color:var(--yellow);
+    border:1px dashed rgba(224,179,65,.45);border-radius:6px;padding:1px 9px;
+  }
+  .msg-system{align-self:center;max-width:92%}
+  .msg-system .bubble{
+    background:none;border:none;color:#6d7488;font-size:12.5px;text-align:center;padding:2px;
+  }
+
+  /* lead 卡片 */
+  .detail-aside{display:flex;flex-direction:column;gap:14px}
+  .lead-card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+  .lead-card .lead-head{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+  .lead-card .lead-title{
+    font-size:14px;font-weight:650;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  }
+  .lead-card .lead-sum{font-size:13.5px}
+  .lead-card .lead-digest{color:var(--muted);font-size:12.5px;margin-top:8px}
+  .concern-list{margin:9px 0 0;padding:0;list-style:none}
+  .concern-list li{
+    position:relative;padding:1px 0 1px 16px;color:var(--muted);font-size:13px;
+  }
+  .concern-list li::before{content:"·";position:absolute;left:6px;font-weight:700}
+  .lead-time{margin-top:10px;font-size:11.5px;color:#6d7488}
+
+  /* ---------- 概览 ---------- */
+  .stat-cards{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+    gap:14px;margin-bottom:16px;
+  }
+  .stat-card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px}
+  .stat-card .num{font-size:30px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.25}
+  .stat-card .num .unit{font-size:13px;color:var(--muted);font-weight:400;margin-left:4px}
+  .stat-card .lbl{color:var(--muted);font-size:13px;margin-top:2px}
+  .stats-grid{display:grid;grid-template-columns:1fr 1.5fr;gap:14px}
+  @media (max-width:860px){.stats-grid{grid-template-columns:1fr}}
+
+  .match-dist{padding:16px 18px;display:flex;flex-direction:column;gap:12px}
+  .match-row{display:flex;align-items:center;gap:10px;font-size:13px}
+  .match-row .m-lbl{width:56px;color:var(--muted);white-space:nowrap}
+  .match-row .m-track{flex:1;height:9px;background:var(--field);border-radius:5px;overflow:hidden}
+  .match-row .m-fill{height:100%;border-radius:5px;min-width:2px}
+  .match-row .m-val{width:34px;text-align:right;font-variant-numeric:tabular-nums;color:var(--text)}
+
+  .chart{padding:16px 18px;display:flex;flex-direction:column;gap:9px}
+  .chart-row{display:grid;grid-template-columns:52px 1fr 40px;align-items:center;gap:10px}
+  .chart-day{color:var(--muted);font-size:12.5px;font-variant-numeric:tabular-nums}
+  .chart-track{height:17px;background:var(--field);border-radius:4px;overflow:hidden}
+  .chart-bar{height:100%;border-radius:4px;background:var(--accent);min-width:2px}
+  .chart-bar.zero{min-width:0}
+  .chart-val{text-align:right;font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+
+  /* ---------- 登录遮罩 ---------- */
+  #login-overlay{
+    position:fixed;inset:0;z-index:100;
+    background:rgba(7,9,14,.72);backdrop-filter:blur(4px);
+    display:flex;align-items:center;justify-content:center;padding:20px;
+  }
+  #login-card{
+    background:var(--panel);border:1px solid var(--line);border-radius:14px;
+    padding:26px 28px;width:min(92vw,380px);
+    display:flex;flex-direction:column;gap:12px;
+  }
+  #login-card h2{margin:0;font-size:16px}
+  #login-card .login-tip{margin:0;color:var(--muted);font-size:12.5px}
+  #login-msg{margin:0;min-height:0;font-size:12.5px;color:var(--red)}
+  #token-input{width:100%}
+  #login-submit{width:100%;padding:8px}
+
+  /* ---------- toast ---------- */
+  #toast{
+    position:fixed;left:50%;bottom:30px;transform:translateX(-50%);
+    z-index:120;max-width:86vw;
+    background:var(--panel-2);border:1px solid var(--line);
+    color:var(--text);border-radius:10px;padding:9px 18px;font-size:13px;
+    box-shadow:0 6px 24px rgba(0,0,0,.45);
+  }
+  #toast[data-type=error]{border-color:rgba(239,107,94,.55);color:#ffb3ab}
+  #toast[data-type=ok]{border-color:rgba(76,195,138,.55);color:#9fe3c2}
+</style>
+</head>
+<body>
+
+  <!-- 登录遮罩（无密码 / 401 时显示） -->
+  <div id="login-overlay" hidden>
+    <form id="login-card" autocomplete="off">
+      <h2>简历问答 · 管理后台</h2>
+      <p class="login-tip">输入管理密码即可进入，密码仅保存在本浏览器。</p>
+      <p id="login-msg"></p>
+      <input id="token-input" type="password" placeholder="输入管理密码…" autocomplete="off">
+      <button id="login-submit" type="submit" class="btn-primary">进入后台</button>
+    </form>
+  </div>
+
+  <header class="topbar">
+    <div class="brand">简历问答 <span class="brand-sub">· 管理后台</span></div>
+    <nav class="tabs" aria-label="主导航">
+      <button class="tab active" data-tab="sessions" type="button">会话</button>
+      <button class="tab" data-tab="leads" type="button">线索</button>
+      <button class="tab" data-tab="stats" type="button">概览</button>
+    </nav>
+    <div class="top-actions">
+      <button id="export-btn" type="button" title="导出全部数据为 JSONL">导出 JSONL</button>
+      <span id="token-state" class="token-state off"><span class="st-dot"></span>未授权</span>
+      <button id="logout-btn" type="button" class="btn-ghost" hidden>退出</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- ============ 会话列表 ============ -->
+    <section id="view-sessions" class="view">
+      <div class="toolbar">
+        <input id="search-input" type="search" placeholder="搜索会话（IP / 内容 / 线索）…" style="width:280px">
+        <button id="search-btn" type="button">搜索</button>
+        <label class="switch" title="只显示产生了 JD 线索的会话">
+          <input type="checkbox" id="haslead-check">仅看有线索
+        </label>
+        <span class="grow"></span>
+        <button id="refresh-btn" type="button" class="btn-ghost">刷新</button>
+      </div>
+      <div class="panel">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>时间</th>
+                <th>IP</th>
+                <th class="num">轮次</th>
+                <th>JD 线索</th>
+                <th style="width:40%">线索摘要</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="sessions-body"></tbody>
+          </table>
+        </div>
+        <div id="sessions-empty" class="empty" hidden></div>
+      </div>
+      <div class="pager" id="sessions-pager">
+        <span id="page-info">—</span>
+        <span class="grow"></span>
+        <button id="page-prev" type="button">上一页</button>
+        <button id="page-next" type="button">下一页</button>
+      </div>
+    </section>
+
+    <!-- ============ 会话详情 ============ -->
+    <section id="view-detail" class="view" hidden>
+      <div class="detail-top">
+        <button id="back-btn" type="button" class="btn-ghost">‹ 返回列表</button>
+        <div id="detail-badges" class="detail-badges"></div>
+      </div>
+      <div id="detail-meta" class="detail-meta"></div>
+      <div class="detail-grid">
+        <div id="transcript" class="panel transcript"></div>
+        <div id="detail-leads" class="detail-aside"></div>
+      </div>
+    </section>
+
+    <!-- ============ 线索 ============ -->
+    <section id="view-leads" class="view" hidden>
+      <div class="toolbar">
+        <div class="seg" id="lead-filter">
+          <button type="button" data-match="all" class="active">全部</button>
+          <button type="button" data-match="high">高匹配</button>
+          <button type="button" data-match="mid">中匹配</button>
+          <button type="button" data-match="low">低匹配</button>
+        </div>
+        <span class="grow"></span>
+        <span id="leads-count" class="toolbar-note"></span>
+      </div>
+      <div class="panel">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>时间</th>
+                <th>岗位</th>
+                <th>匹配</th>
+                <th style="width:46%">一句话结论</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="leads-body"></tbody>
+          </table>
+        </div>
+        <div id="leads-empty" class="empty" hidden></div>
+      </div>
+    </section>
+
+    <!-- ============ 概览 ============ -->
+    <section id="view-stats" class="view" hidden>
+      <div id="stats-cards" class="stat-cards"></div>
+      <div class="stats-grid">
+        <div class="panel">
+          <h3 class="panel-title">线索匹配分布</h3>
+          <div id="match-dist" class="match-dist"></div>
+        </div>
+        <div class="panel">
+          <h3 class="panel-title">近 7 日会话数</h3>
+          <div id="daily-chart" class="chart"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="toast" data-type="info" hidden></div>
+  <script type="module" src="./app.mjs"></script>
+</body>
+</html>

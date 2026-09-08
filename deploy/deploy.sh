@@ -8,11 +8,6 @@ MODE="${1:-}"
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT"
 
-if [[ "$MODE" != "local" && "$MODE" != "prod" ]]; then
-  echo "用法: ./deploy/deploy.sh local|prod" >&2
-  exit 1
-fi
-
 if [[ ! -f .env ]]; then
   echo "缺少 .env，先运行 ./script/gen-env.sh 生成" >&2
   exit 1
@@ -33,6 +28,10 @@ case "$MODE" in
     "${COMPOSE[@]}" -f deploy/compose.prod.yaml up -d --build
     DOMAIN="$(grep -E '^DOMAIN=' .env | cut -d= -f2)"
     echo "✅ 生产栈已启动: https://${DOMAIN}"
+    ;;
+  *)
+    echo "用法: ./deploy/deploy.sh local|prod" >&2
+    exit 1
     ;;
 esac
 

@@ -11,11 +11,13 @@ fi
 
 PG_PASSWORD="$(openssl rand -hex 16)"
 API_TOKEN="$(openssl rand -hex 24)"
+CHAT_TOKEN="$(openssl rand -hex 24)"
 
 sed \
   -e "s|^POSTGRES_PASSWORD=.*|POSTGRES_PASSWORD=${PG_PASSWORD}|" \
   -e "s|^DATABASE_URL=.*|DATABASE_URL=postgresql://resume:${PG_PASSWORD}@localhost:5432/resume|" \
   -e "s|^INTERNAL_API_TOKEN=.*|INTERNAL_API_TOKEN=${API_TOKEN}|" \
+  -e "s|^CHAT_ADMIN_TOKEN=.*|CHAT_ADMIN_TOKEN=${CHAT_TOKEN}|" \
   .env.example > .env
 
 chmod 600 .env
@@ -25,6 +27,7 @@ cat <<EOF
 
   POSTGRES_PASSWORD   = ${PG_PASSWORD}
   INTERNAL_API_TOKEN  = ${API_TOKEN}
+  CHAT_ADMIN_TOKEN    = ${CHAT_TOKEN}
 
 生产部署前请再补两个值：
   DOMAIN     你的域名（DNS A 记录指向本机）

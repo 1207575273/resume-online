@@ -8,9 +8,12 @@ WORKDIR /repo
 # ---------- 依赖层 ----------
 FROM base AS deps
 COPY pnpm-workspace.yaml pnpm-lock.yaml package.json .npmrc ./
-COPY server/package.json server/package.json
 COPY web/package.json web/package.json
-RUN pnpm install --frozen-lockfile --filter @resume/web...
+# cache mount：pnpm store 常驻构建缓存卷，网络劣化时重试可增量续传
+# --trust-lockfile：跳过对 310 个 lockfile entry 的供应链在线验证（HK 网络查必挂；
+# lockfile 入库前已在本地经过验证，tarball integrity 校验不受此 flag 影响）
+RUN --mount=type=cache,target=/root/.local/share/pnpm/store \
+    pnpm install --frozen-lockfile --trust-lockfile --filter @resume/web...
 
 # ---------- 构建层 ----------
 FROM deps AS build
@@ -32,6 +35,8 @@ WORKDIR /app
 COPY --from=build --chown=app:app /repo/web/.next/standalone ./
 # monorepo 布局：standalone 产物在 web/ 子目录，静态资源须对应放到 web/.next/static
 COPY --from=build --chown=app:app /repo/web/.next/static ./web/.next/static
+# public 静态资源（og.png / IndexNow key 等）——standalone 产物不包含，必须单独拷
+COPY --from=build --chown=app:app /repo/web/public ./web/public
 
 USER app
 EXPOSE 3000

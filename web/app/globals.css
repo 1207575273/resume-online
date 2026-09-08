@@ -203,6 +203,17 @@
     transform: translate3d(6vw, -8vh, 0) scale(1.15);
   }
 }
+/* WebGL 着色器画布（CSS blob 作为兜底层；着色器就位后 blob 降为衬托） */
+.aurora-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.webgl-on .aurora-blob {
+  opacity: 0.3;
+}
+
 /* 工程网格：极淡发丝线，径向渐隐只留中心区域 */
 .aurora-grid {
   position: absolute;
@@ -393,11 +404,8 @@
 .chip:hover {
   color: var(--text);
 }
-/* 灰底区带（经历）内的芯片换成亮面 */
+/* 灰底区带（经历）内的芯片换成亮面（--surface 随 .dark 自动切换，无需暗色变体） */
 .tint .chip {
-  background: var(--surface);
-}
-.dark .tint .chip {
   background: var(--surface);
 }
 

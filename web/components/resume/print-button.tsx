@@ -22,7 +22,7 @@ export function PrintButton() {
       const url = URL.createObjectURL(blob);
       const anchor = Object.assign(document.createElement("a"), {
         href: url,
-        download: "CodeYang-Resume.pdf",
+        download: "杨胜-AI应用架构师-深圳-17764199296.pdf",
       });
       anchor.click();
       URL.revokeObjectURL(url);

@@ -60,6 +60,15 @@ export function Hero({ profile, versionNumber, versionLabel }: HeroProps) {
           </div>
         )}
 
+        {profile.location && (
+          <p
+            className="animate-in fade-in duration-1000 fill-mode-both mt-4 text-[14px] text-[var(--text-dim)]"
+            style={{ animationDelay: "400ms" }}
+          >
+            {profile.location}
+          </p>
+        )}
+
         <p
           className="animate-in fade-in duration-1000 fill-mode-both mx-auto mt-6 max-w-[34em] leading-relaxed text-[var(--text-dim)]"
           style={{ animationDelay: "400ms" }}

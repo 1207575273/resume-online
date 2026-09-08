@@ -10,16 +10,16 @@ interface Stat {
 }
 
 const STATS: Stat[] = [
-  { value: 6, suffix: " 年", label: "后端与架构工程" },
+  { value: 5, suffix: " 年+", label: "后端与架构工程" },
   { value: 20, suffix: "亿+", label: "Token / 日（可观测体系覆盖）" },
   { value: 8000, suffix: " 万+", label: "文档渲染 / 年（讯飞智学网）" },
   { value: 2500, suffix: "+", label: "学校承载（业务营收 2.1亿 → 9亿）" },
 ];
 
-/** 单个数字：进入视口后一次性 count-up（reduced-motion 直接显示终值） */
+/** 单个数字：初值即终值（打印/Ctrl+P 不经过动画就不会打出 0），进入视口后从 0 count-up 一次 */
 function StatNumber({ stat, delay }: { stat: Stat; delay: number }) {
   const ref = useRef<HTMLSpanElement>(null);
-  const [display, setDisplay] = useState(0);
+  const [display, setDisplay] = useState(stat.value);
 
   useEffect(() => {
     const element = ref.current;

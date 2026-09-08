@@ -31,7 +31,10 @@ export function ExperienceSpec({ experiences }: { experiences: ExperienceItem[] 
               <span className="tl-dot" aria-hidden />
               <div>
                 <p className="spec-time">{formatPeriod(exp.start, exp.end)}</p>
-                <h3 className="mt-2 text-lg leading-snug font-semibold">{exp.company}</h3>
+                <h3 className="mt-2 flex flex-wrap items-center gap-2 text-lg leading-snug font-semibold">
+                  {exp.company}
+                  {exp.companyTag && <span className="chip font-normal">{exp.companyTag}</span>}
+                </h3>
                 <p className="mt-1.5 text-[15px] text-[var(--text-dim)]">{exp.role}</p>
                 {exp.tech.length > 0 && (
                   <ul className="mt-4 flex flex-wrap gap-1.5">

@@ -2,7 +2,35 @@ import { AiToolIcon, hasAiToolIcon } from "@/components/resume/ai-tool-icon";
 import { Reveal } from "@/components/resume/reveal";
 import type { SkillGroup, SkillItem } from "@/lib/resume-types";
 
-/** 单项技能：名称 + 熟练度细进度条（轨道 3px，进入视口一次性生长） */
+/**
+ * 熟练度分层：不自评精确分数（97/95 这类两位数精度既不可验证又不谦逊），
+ * 只按三档文字分层，进度条长度仍由 level 驱动呈现相对差异。
+ */
+const TIER_MAX: Record<string, number> = { 核心: 92, 熟练: 76, 了解: 58 };
+function tierOf(level: number): keyof typeof TIER_MAX {
+  return level >= 85 ? "核心" : level >= 70 ? "熟练" : "了解";
+}
+
+/** 熟练度三档标签（SkillBar / SkillBadge 共用；level 缺失不渲染） */
+function SkillLevelTag({ level }: { level: number | undefined }) {
+  if (level === undefined) return null;
+  return <span className="skill-level">{tierOf(level)}</span>;
+}
+
+/** 熟练度细进度条（轨道 3px，进入视口一次性生长；level 缺失不渲染） */
+function SkillTrack({ level }: { level: number | undefined }) {
+  if (level === undefined) return null;
+  return (
+    <div className="skill-track">
+      <div
+        className="skill-fill"
+        style={{ "--level": `${TIER_MAX[tierOf(level)]}%` } as React.CSSProperties}
+      />
+    </div>
+  );
+}
+
+/** 单项技能：名称 + 熟练度细进度条 */
 function SkillBar({ skill }: { skill: SkillItem }) {
   return (
     <li>
@@ -11,13 +39,9 @@ function SkillBar({ skill }: { skill: SkillItem }) {
           <AiToolIcon name={skill.name} className="size-4 shrink-0 text-[var(--accent)]" />
           {skill.name}
         </span>
-        {skill.level !== undefined && <span className="skill-level">{skill.level}</span>}
+        <SkillLevelTag level={skill.level} />
       </div>
-      {skill.level !== undefined && (
-        <div className="skill-track">
-          <div className="skill-fill" style={{ "--level": `${skill.level}%` } as React.CSSProperties} />
-        </div>
-      )}
+      <SkillTrack level={skill.level} />
     </li>
   );
 }
@@ -32,16 +56,9 @@ function SkillBadge({ skill }: { skill: SkillItem }) {
           <span className="truncate text-[14.5px] font-medium text-[var(--text)]/90">
             {skill.name}
           </span>
-          {skill.level !== undefined && <span className="skill-level">{skill.level}</span>}
+          <SkillLevelTag level={skill.level} />
         </div>
-        {skill.level !== undefined && (
-          <div className="skill-track">
-            <div
-              className="skill-fill"
-              style={{ "--level": `${skill.level}%` } as React.CSSProperties}
-            />
-          </div>
-        )}
+        <SkillTrack level={skill.level} />
       </div>
     </li>
   );

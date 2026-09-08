@@ -34,6 +34,8 @@ export interface SkillGroup {
 
 export interface ExperienceItem {
   company: string;
+  /** 公司名旁的小标签（如「百得思维 · 讯飞子公司 · 内包」），说明用工主体 */
+  companyTag?: string;
   role: string;
   start: string;
   end?: string;

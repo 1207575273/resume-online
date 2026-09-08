@@ -9,7 +9,9 @@ WORKDIR /repo
 FROM base AS deps
 COPY pnpm-workspace.yaml pnpm-lock.yaml package.json .npmrc ./
 COPY server/package.json server/package.json
-RUN pnpm install --frozen-lockfile --filter @resume/server...
+# --trust-lockfile：跳过供应链在线验证（同 web/Dockerfile 注释）；cache mount 增量续传
+RUN --mount=type=cache,target=/root/.local/share/pnpm/store \
+    pnpm install --frozen-lockfile --trust-lockfile --filter @resume/server...
 
 # ---------- 构建层：生成 Prisma client 并构建 standalone 产物 ----------
 FROM deps AS build
@@ -19,8 +21,8 @@ RUN pnpm --filter @resume/server exec prisma generate \
 
 # ---------- 运行层：standalone 产物 + 全局 prisma CLI（迁移用） ----------
 FROM node:22-alpine AS runner
-RUN corepack enable \
- && npm install -g prisma@7.10.0 \
+# runner 只用 node + npm 全局 CLI，无需 corepack
+RUN npm install -g prisma@7.10.0 \
  && addgroup -S app && adduser -S app -G app
 ENV NODE_ENV=production \
     PORT=3001 \

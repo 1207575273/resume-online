@@ -4,9 +4,9 @@ import { useEffect, useState } from "react";
 import { ThemeToggle } from "@/components/resume/theme-toggle";
 
 const LINKS = [
+  { href: "#experience", label: "经历" },
   { href: "#skills", label: "技能" },
   { href: "#projects", label: "项目" },
-  { href: "#experience", label: "经历" },
 ];
 
 export function SiteNav() {

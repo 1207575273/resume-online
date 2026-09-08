@@ -135,3 +135,40 @@ pnpm db:seed                # 写入示例简历数据
 - **文件：人类可读**（pino-pretty 格式），按天轮转 `logs/server-YYYY-MM-DD.log`，**保留 14 天**自动清理
 - 容器内文件日志挂载到宿主机 `logs/server/`；相关变量：`LOG_LEVEL` / `LOG_DIR` / `LOG_RETENTION_DAYS`（`LOG_FILE=false` 可关闭文件日志）
 - 刻意不用 pino transport（worker 线程）：Next standalone 打包下不可靠，轮转为自实现的 40 行按天切换流
+
+## AI 问答（resume-chat）
+
+workspace 新增的第 3 个应用包 `chat/`（一级目录只多这一个）：让访客在简历页右下角直接问 AI「这个人符合我的 JD 吗」，每会话一个常驻 PTY 跑 `claude -p`（stream-json 双向流，AskUser 协议人在环），全部会话与线索落库，站长在管理后台分析「谁在问、问什么、匹配结论」。完整方案与协议见 `docs/ai-chat-plan.md`。
+
+```
+浏览器（简历页右下角聊天窗）
+   │  WSS /chat/ws/:sessionId ＋ HTTPS /chat/api/*
+   ▼
+nginx ──/chat/──▶ chat:3210（@resume/chat，Node 22 ESM，零框架）
+                    │  每会话一个 node-pty 常驻进程
+                    ▼
+                claude -p（stream-json 双向流，工具全禁）
+                    │  会话 / 消息 / 线索
+                    ▼
+                db: PostgreSQL（复用现有实例，chat_* 三张表，不进 Prisma）
+```
+
+配置（`chat/src/config.mjs` 读 env，生产由 compose 注入）：
+
+| 变量 | 说明 |
+|---|---|
+| `CHAT_MODEL` | 传给 claude CLI 的模型，默认 `sonnet` |
+| `CHAT_ADMIN_TOKEN` | 管理后台令牌（`gen-env.sh` 生成；后台接口走 `x-admin-token` 头） |
+| `CHAT_MAX_TURNS` / `CHAT_IDLE_MS` / `CHAT_RATE_*` | 会话轮次 / 空闲断开 / 每 IP 限流上限（成本护栏） |
+| `ANTHROPIC_BASE_URL` / `ANTHROPIC_AUTH_TOKEN` / `ANTHROPIC_API_KEY` | claude CLI 鉴权（复用现有 provider 配置，缺了会话起不来） |
+| `DATABASE_URL` / `RESUME_API_BASE` | 数据库连接与简历内容 API（容器内 `http://server:3001/api/v1`） |
+
+本地开发三步（Node 22，先 `nvm use 22`）：
+
+```bash
+pnpm install                       # 1. 根 workspace 一把装全
+pnpm dev                           # 2. 起依赖：db 容器 + 迁移 + server/web 双 dev
+pnpm --filter @resume/chat dev     # 3. 起 chat（:3210，--watch 热重启）
+```
+
+无 API key 也能全链路自测：`CHAT_CLAUDE_CMD=./test/mock-claude.mjs pnpm --filter @resume/chat test`（脚本化假 claude 回放，不花 token）。

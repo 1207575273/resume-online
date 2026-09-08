@@ -78,6 +78,9 @@ services:
     networks: [internal]
 
   pdf:
+    # 容器化预案（当前 PDF 由宿主机 pdf-host.mjs 承接）：默认不启动，
+    # 切换时 docker compose --profile pdf up -d pdf 并把 nginx 的 /resume.pdf 指回 pdf:3002
+    profiles: ["pdf"]
     build:
       context: ../pdf
       dockerfile: Dockerfile
@@ -92,6 +95,37 @@ services:
       PDF_PAGE_URL: http://web:3000/
     depends_on:
       - web
+    networks: [internal]
+
+  chat:
+    build:
+      context: ..
+      dockerfile: chat/Dockerfile
+      # 与 server/web 同因：桥接网络下访问 npm 极慢（含 npm i -g claude CLI），
+      # 构建期走 host 网络；不影响运行时容器网络隔离
+      network: host
+    restart: unless-stopped
+    labels:
+      resume.project: "CodeYang 在线简历"
+      resume.repo: "codeyang-resume-online"
+      resume.service: "AI 问答网关 · Node 22 + claude CLI（stdio 流式对话 + 会话入库）"
+      resume.layer: "应用层"
+    environment:
+      # 复用 db 服务实例，chat 用独立 pg 连接（不进 Prisma）
+      DATABASE_URL: postgresql://${POSTGRES_USER:-resume}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-resume}
+      # 容器网络内直连 server 拉简历内容
+      RESUME_API_BASE: http://server:3001/api/v1
+      CHAT_ADMIN_TOKEN: ${CHAT_ADMIN_TOKEN:?请在 .env 中设置 CHAT_ADMIN_TOKEN}
+      # claude CLI 鉴权（透传给 PTY 子进程）：走第三方 provider 则配 BASE_URL + AUTH_TOKEN/API_KEY
+      ANTHROPIC_BASE_URL: ${ANTHROPIC_BASE_URL:-}
+      ANTHROPIC_AUTH_TOKEN: ${ANTHROPIC_AUTH_TOKEN:-}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      CHAT_MODEL: ${CHAT_MODEL:-sonnet}
+      # WS/REST origin 白名单用
+      SITE_URL: ${SITE_URL:-http://localhost}
+    depends_on:
+      db:
+        condition: service_healthy
     networks: [internal]
 
   nginx:
@@ -109,6 +143,8 @@ services:
       - "80:80"
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      # 共享 location 段（nginx.conf / nginx.prod.conf 都 include 它，消除双写漂移）
+      - ./nginx/shared-locations.conf:/etc/nginx/shared-locations.conf:ro
     depends_on:
       - web
       - server

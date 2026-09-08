@@ -42,18 +42,13 @@ export default async function HomePage() {
       <main>
         <Hero profile={content.profile} versionNumber={version.number} versionLabel={version.label} />
         <StatBand />
+        {content.experiences.length > 0 && <ExperienceSpec experiences={content.experiences} />}
         {content.skillGroups.length > 0 && <SkillSpec groups={content.skillGroups} />}
         {content.projects.length > 0 && <ProjectTiles projects={content.projects} />}
-        {content.experiences.length > 0 && <ExperienceSpec experiences={content.experiences} />}
         <EducationSection education={content.education} />
       </main>
 
-      <SiteFooter
-        profile={content.profile}
-        versionNumber={version.number}
-        versionLabel={version.label}
-        updatedAt={resume.updatedAt}
-      />
+      <SiteFooter profile={content.profile} updatedAt={resume.updatedAt} />
 
       {/* SEO：Person 结构化数据 */}
       <script
