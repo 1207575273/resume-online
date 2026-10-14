@@ -16,8 +16,9 @@
  *            另外进程启动时先发一帧 {"type":"system","subtype":"init",...}（模仿真实 CLI
  *            的首帧，顺带考验 parser 对非关注帧的容错）。
  *
- * 轮次状态机（按收到的 user 消息条数）：
- *   第 1 条（开场注入）→ 欢迎 delta + 把 ASK_USER_JSON 行拆成两段 delta 输出
+ * 轮次状态机（按收到的 user 消息条数；2026-09-11 起第 1 条是访客真实提问，
+ * 服务端不再注入开场消息——AI 静默待命）：
+ *   第 1 条（访客首问）→ 欢迎 delta + 把 ASK_USER_JSON 行拆成两段 delta 输出
  *                        （"ASK_US" / "ER_JSON {...}"，制造跨 chunk 切割场景，考验
  *                          parser 对不完整行的缓冲拼接，见文档 §3.2）+ result（净文本）
  *   第 2 条（访客贴 JD）→ 匹配分析 delta（含「匹配度：高」）+ LEAD_JSON 整行 + result（净文本）

@@ -68,13 +68,21 @@ const MIME = {
 
 async function serveAdminStatic(req, res) {
   if (req.method !== "GET") return false;
-  let pathname = "";
+  let url;
   try {
-    pathname = new URL(req.url ?? "/", "http://localhost").pathname;
+    url = new URL(req.url ?? "/", "http://localhost");
   } catch {
     return false;
   }
+  const pathname = url.pathname;
   if (pathname !== ADMIN_PREFIX && !pathname.startsWith(ADMIN_PREFIX + "/")) return false;
+
+  // 无尾斜杠 → 301 补斜杠：否则 index.html 内的相对资源（./app.mjs）会被浏览器按
+  // /chat/ 目录解析成 /chat/app.mjs 而 404，module 脚本静默不执行、登录遮罩永不弹出
+  if (pathname === ADMIN_PREFIX) {
+    res.writeHead(301, { location: ADMIN_PREFIX + "/" + url.search }).end();
+    return true;
+  }
 
   // /chat/admin 与 /chat/admin/ 都落到 index.html；其余按相对路径取文件
   const rel = pathname.slice(ADMIN_PREFIX.length).replace(/^\/+/, "");

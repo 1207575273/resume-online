@@ -2,9 +2,14 @@
 //
 // 每个会话 spawn 一个常驻 claude 进程跑：
 //   claude -p --input-format stream-json --output-format stream-json --verbose \
-//          --max-turns N --model M --disallowed-tools Bash,Edit,Write,NotebookEdit,WebFetch
+//          --max-turns N --model M --append-system-prompt <系统指令+简历> \
+//          --disallowed-tools Bash,Edit,Write,NotebookEdit,WebFetch
 // 输出（stdout）全部交给 createStreamParser 解析；输入（sendUserMessage）向 stdin
 // 写一行 stream-json user 消息。会话结束 kill()：SIGTERM 整个进程组 → 3s 后 SIGKILL 兜底。
+//
+// —— 静默待命（2026-09-11 改造）——
+// 系统指令与简历上下文经 --append-system-prompt 注入，spawn 后不写任何 stdin：
+// AI 不再开场自说自话，等访客第一条真实提问才开始生成（前端 Welcome 空态承担欢迎语）。
 //
 // —— stdio 管道而非 PTY（真机踩坑记录，2026-09-07）——
 // 原方案用 node-pty（终端语义），真机验证发现 claude CLI 在「stdin 是 TTY」时，
@@ -12,8 +17,8 @@
 // argument" 退出（无论 canonical/raw、无论注入时机——它在任何输出帧之前做同步检查，
 // TTY 缓冲里的数据它读不到）。而 stdin 是管道时完全正常，且已验证多轮常驻：
 // 连续写两条 user 消息得到两个 result 帧、进程持续存活。
-// 附带收益：管道没有 4096 字节行限制（12KB 开场免分块）、stderr 可单独捕获进日志。
-// detached:true 让 claude 成为进程组长，process.kill(-pid) 仍可整组收割。
+// 附带收益：stderr 可单独捕获进日志；detached:true 让 claude 成为进程组长，
+// process.kill(-pid) 仍可整组收割。
 
 import { spawn } from 'node:child_process';
 import { createStreamParser, formatUserMessage } from './claude-protocol.mjs';
@@ -27,7 +32,7 @@ const KILL_GRACE_MS = 3000;
  * 创建一个常驻 claude -p 会话。
  * @param {{
  *   sessionId: string,             // 会话 ID（仅用于日志前缀）
- *   openingMessage?: string,       // 首条注入的 user 消息（prompt.mjs 生成的系统指令 + 简历上下文）
+ *   systemPrompt?: string,         // --append-system-prompt 注入（prompt.mjs 生成的系统指令 + 简历上下文）
  *   claudeCmd?: string,            // claude 可执行命令（测试可用 CHAT_CLAUDE_CMD / mock 脚本覆盖）
  *   model?: string,                // 默认 sonnet
  *   maxTurns?: number,             // 默认 24
@@ -42,7 +47,7 @@ const KILL_GRACE_MS = 3000;
  */
 export function createClaudeSession({
   sessionId,
-  openingMessage,
+  systemPrompt,
   claudeCmd = 'claude',
   model = 'sonnet',
   maxTurns = 24,
@@ -55,7 +60,7 @@ export function createClaudeSession({
 }) {
   const log = (...args) => console.error(`[pty-bridge ${sessionId}]`, ...args);
 
-  // 契约锁定的启动参数（一字不改）
+  // 契约锁定的启动参数（一字不改）+ system prompt 注入（2026-09-11：静默待命改造）
   const args = [
     '-p',
     '--input-format',
@@ -70,6 +75,9 @@ export function createClaudeSession({
     '--disallowed-tools',
     'Bash,Edit,Write,NotebookEdit,WebFetch',
   ];
+  if (systemPrompt != null && systemPrompt !== '') {
+    args.push('--append-system-prompt', systemPrompt);
+  }
 
   const parser = createStreamParser({ onDelta, onAskUser, onLead, onResult });
 
@@ -182,11 +190,7 @@ export function createClaudeSession({
     }
   };
 
-  // —— 首条注入：stdin 是管道，spawn 后立即写入即可——
-  // 数据在管道缓冲里等着，claude 启动后的首次读取就能拿到（这正是它在 TTY 上做不到的）。
-  if (openingMessage != null && openingMessage !== '') {
-    sendUserMessage(openingMessage);
-  }
+  // —— 静默待命：spawn 后不写任何 stdin，等访客第一条真实提问（见文件头注释）——
 
   // —— 终止：先 SIGTERM 进程组，3s 后 SIGKILL 强杀 ——
   const kill = () => {

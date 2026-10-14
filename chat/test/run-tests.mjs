@@ -312,6 +312,18 @@ const plan = [
     await waitHealthy(ctx.srv, BASE);
   }],
 
+  ['admin：无尾斜杠 301 到带斜杠（否则页内 ./app.mjs 相对解析 404、JS 静默不执行）', async () => {
+    const res = await fetch(`${BASE}/chat/admin`, { redirect: 'manual' });
+    assert.equal(res.status, 301, `期望 301，实际 ${res.status}`);
+    assert.equal(
+      res.headers.get('location'), '/chat/admin/',
+      `location 期望 /chat/admin/，实际 ${res.headers.get('location')}`,
+    );
+    const page = await fetch(`${BASE}/chat/admin/`);
+    assert.equal(page.status, 200, `带斜杠期望 200，实际 ${page.status}`);
+    assert.match(page.headers.get('content-type') ?? '', /text\/html/);
+  }],
+
   ['POST /chat/api/sessions 创建会话', async () => {
     const res = await fetch(`${BASE}/chat/api/sessions`, {
       method: 'POST',
@@ -332,7 +344,8 @@ const plan = [
   ['第 1 轮：assistant_delta 流式下发且无协议行泄漏', async () => {
     ctx.ch = new WsChannel(`ws://127.0.0.1:${PORT}/chat/ws/${ctx.sessionId}`, WS_ORIGIN);
     await ctx.ch.openPromise;
-    // 开场注入触发 mock 第 1 轮：收集 delta 与 session_ready，直到 ask_user 出现
+    // 2026-09-11 起 AI 静默待命：先发访客第一条真实消息触发第 1 轮，再收集 delta 直到 ask_user
+    ctx.ch.send({ type: 'user_message', text: '你好，想了解这位候选人和 AI 应用工程师岗位的匹配度' });
     const { picked, stopFrame } = await ctx.ch.collectUntil(
       (f) => f.type === 'assistant_delta' || f.type === 'session_ready',
       (f) => f.type === 'ask_user',

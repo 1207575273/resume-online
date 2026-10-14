@@ -4,7 +4,8 @@
  * 连接：/chat/ws/:sessionId
  *   1. origin 校验（guards.checkOrigin，A8）→ 会话存在性校验（db.getSession）
  *   2. 该会话若无 PTY 则懒启动：getResumeContext() → buildOpeningMessage() →
- *      claudeFactory({ sessionId, openingMessage, claudeCmd, model, maxTurns, on* })
+ *      claudeFactory({ sessionId, systemPrompt, claudeCmd, model, maxTurns, on* })
+ *      （systemPrompt 经 --append-system-prompt 注入；claude 静默待命，等访客先问）
  *   3. 首个连接成功即下发 session_ready
  *
  * WS 协议（docs/ai-chat-plan.md §3.4）：
@@ -214,20 +215,20 @@ export function createGateway({ config, db, guards, claudeFactory }) {
       } catch (err) {
         console.warn(`[chat] 简历上下文获取失败，降级为空上下文：${err?.message ?? err}`);
       }
-      let openingMessage;
+      let systemPrompt;
       try {
         const mod = await loadModule("./prompt.mjs", "prompt.mjs");
         if (typeof mod.buildOpeningMessage === "function") {
-          openingMessage = mod.buildOpeningMessage(resumeContext);
+          systemPrompt = mod.buildOpeningMessage(resumeContext);
         }
       } catch (err) {
-        console.warn(`[chat] 开场消息构建失败，退回原始上下文：${err?.message ?? err}`);
+        console.warn(`[chat] 系统 prompt 构建失败，退回原始上下文：${err?.message ?? err}`);
       }
-      if (typeof openingMessage !== "string") openingMessage = resumeContext;
+      if (typeof systemPrompt !== "string") systemPrompt = resumeContext;
       const callbacks = makeClaudeCallbacks(state);
       state.claude = await claudeFactory({
         sessionId: state.sessionId,
-        openingMessage,
+        systemPrompt,
         claudeCmd: config.CLAUDE_CMD,
         model: config.MODEL,
         maxTurns: config.MAX_TURNS,
