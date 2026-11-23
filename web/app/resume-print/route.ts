@@ -62,7 +62,7 @@ export async function GET() {
         "蓝凌定制版云端 Agent 工作台（Workbody）：打通需求→原型→研发→测试→交付全链路，支撑小团队规模化项目交付。",
       highlights: [
         "交付模式革新：1 FDE + 1 设计 + 1 项目经理，三人小组端到端交付 ~50 万级项目并可规模化复制；跑通 7 个交付案例",
-        "140+ 人使用 / 20+ 人深度使用；Claude Code + 钉钉 IM + K8s + OpenSandbox 沙箱隔离深度集成",
+        "140+ 人使用（覆盖二开中心主任、PM、HR 主管等研发之外的多方向人群）/ 20+ 人深度使用；Claude Code + 钉钉 IM + K8s + OpenSandbox 沙箱隔离深度集成",
       ],
     },
     {
