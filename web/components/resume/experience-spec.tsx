@@ -2,7 +2,7 @@ import { ArrowUpRight } from "lucide-react";
 import { formatPeriod } from "@/lib/api";
 import { Chip } from "@/components/resume/chip";
 import { Highlights } from "@/components/resume/highlights";
-import type { ExperienceItem } from "@/lib/resume-types";
+import type { ExperienceItem, ExperienceReference } from "@/lib/resume-types";
 
 /** 经历头部的官网链接:与项目区「官网 ↗」同语言;缺省不渲染 */
 function CompanyLink({ url }: { url?: string }) {
@@ -18,6 +18,26 @@ function CompanyLink({ url }: { url?: string }) {
       官网
       <ArrowUpRight className="size-3.5" aria-hidden />
     </a>
+  );
+}
+
+/** 背调联系人:电话中间四位掩码(完整号码仅线下背调流程提供) */
+const maskPhone = (phone: string) => phone.replace(/(\d{3})\d{4}(\d{4})/, "$1****$2");
+
+function ReferenceLine({ reference }: { reference?: ExperienceReference }) {
+  if (!reference) return null;
+  const parts = [
+    "背调",
+    reference.name,
+    reference.title,
+    reference.phone ? maskPhone(reference.phone) : undefined,
+  ].filter(Boolean);
+  return (
+    <p className="mt-3 text-[12.5px] leading-relaxed text-[var(--text-dim)]">
+      {parts.slice(0, 2).join("：")}
+      {reference.title && <span className="opacity-80"> · {reference.title}</span>}
+      {reference.phone && <span className="opacity-80"> · {maskPhone(reference.phone)}</span>}
+    </p>
   );
 }
 
@@ -66,6 +86,7 @@ export function ExperienceSpec({ experiences }: { experiences: ExperienceItem[] 
                     ))}
                   </ul>
                 )}
+                <ReferenceLine reference={exp.reference} />
               </div>
               <div>
                 {exp.summary && (

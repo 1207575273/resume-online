@@ -37,10 +37,19 @@ export interface SkillGroup {
   skills: SkillItem[];
 }
 
+/** 背调联系人:展示时电话做掩码(中间四位隐藏),完整号码仅线下提供 */
+export interface ExperienceReference {
+  name: string;
+  title?: string;
+  phone?: string;
+}
+
 export interface ExperienceItem {
   company: string;
   /** 公司/产品官网(嵌入经历头部的「官网 ↗」链接);缺省不渲染 */
   companyUrl?: string;
+  /** 背调联系人(经历左列展示,电话掩码) */
+  reference?: ExperienceReference;
   /** 公司名旁的小标签（如「百得思维 · 讯飞子公司 · 内包」），说明用工主体 */
   companyTag?: string;
   role: string;
@@ -157,9 +166,20 @@ export function createResumeContent(raw: unknown): ResumeContent {
 
   const experiences: ExperienceItem[] = arr(root, "experiences", "content").map((item) => {
     const exp = asRecord(item, "content.experiences[]");
+    let reference: ExperienceReference | undefined;
+    const refRaw = exp.reference;
+    if (typeof refRaw === "object" && refRaw !== null && !Array.isArray(refRaw)) {
+      const ref = asRecord(refRaw, "content.experiences[].reference");
+      reference = {
+        name: str(ref, "name", "reference")!,
+        title: str(ref, "title", "reference", true),
+        phone: str(ref, "phone", "reference", true),
+      };
+    }
     return {
       company: str(exp, "company", "experiences[]")!,
       companyUrl: str(exp, "companyUrl", "experiences[]", true),
+      reference,
       companyTag: str(exp, "companyTag", "experiences[]", true),
       role: str(exp, "role", "experiences[]")!,
       start: str(exp, "start", "experiences[]")!,

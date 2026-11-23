@@ -34,10 +34,19 @@ export interface SkillGroup {
   skills: SkillItem[];
 }
 
+/** 背调联系人:展示时电话做掩码(中间四位隐藏),完整号码仅线下提供 */
+export interface ExperienceReference {
+  name: string;
+  title?: string;
+  phone?: string;
+}
+
 export interface ExperienceItem {
   company: string;
   /** 公司/产品官网(嵌入经历头部的「官网 ↗」链接);缺省不渲染 */
   companyUrl?: string;
+  /** 背调联系人(经历左列展示,电话掩码) */
+  reference?: ExperienceReference;
   /** 公司名旁的小标签（如「百得思维 · 讯飞子公司 · 内包」），说明用工主体 */
   companyTag?: string;
   role: string;
