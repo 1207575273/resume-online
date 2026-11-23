@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>杨胜 · PDF 简历</title>
+<meta name="robots" content="noindex,nofollow">
+<!--
+  PDF 简历模板(实体单页文件,可直接用浏览器打开预览版式):
+  - 版式源自 res/杨胜_v4 系列;配色与主站一致(暖白 + 柠檬绿单强调)
+  - {{XXX}} 为数据占位符,由 web/app/resume-print/route.ts 拉简历 API 实时填充
+  - 改样式直接编辑本文件,部署后自动生效;数据永远与线上发布版同步
+-->
+<style>
+  @page { size: A4; margin: 10mm 14mm; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { line-height: 1.65; color: #1a1a16; background: #fff; -webkit-print-color-adjust: exact; print-color-adjust: exact; font-family: -apple-system, "PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif; }
+  .page { max-width: 210mm; margin: 0 auto; padding: 10mm 14mm; }
+  a { text-decoration: none; color: #5a7a00; }
+
+  /* ===== 头部(柠檬绿渐变主线,呼应主站 hero) ===== */
+  .hd { display: flex; justify-content: space-between; align-items: flex-start; padding-bottom: 10px; border-bottom: 3px solid; border-image: linear-gradient(90deg,#91e600,#a8ff1a,#d0f93b) 1; margin-bottom: 8px; }
+  .hd-name { font-size: 34px; font-weight: 800; color: #0e0e0e; letter-spacing: 4px; }
+  .hd-sub { font-size: 15px; color: #5a7a00; font-weight: 600; margin-top: 2px; }
+  .hd-r { text-align: right; font-size: 12px; color: #374151; line-height: 1.75; min-width: 220px; flex-shrink: 0; }
+  .hd-desc { font-size: 13px; color: #1f2937; background: linear-gradient(90deg,#f6fdea,#f9fef0); padding: 8px 12px; border-radius: 4px; line-height: 1.62; border-left: 3px solid #91e600; margin-bottom: 6px; }
+  .hd-desc b { color: #5a7a00; }
+  .hd-tags { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 8px; }
+  .hd-tags .tag { font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 12px; background: #f4fbe8; color: #5a7a00; border: 1px solid #c9eb7a; white-space: nowrap; }
+
+  /* ===== 分节(编号 + 渐隐横线) ===== */
+  .sc { margin-bottom: 9px; }
+  .sc-t { display: flex; align-items: baseline; gap: 7px; font-size: 14.5px; font-weight: 700; color: #43530e; letter-spacing: 1.5px; margin-bottom: 5px; }
+  .sc-no { font-size: 11px; font-weight: 800; color: #91e600; letter-spacing: 1px; }
+  .sc-line { flex: 1; height: 1px; background: linear-gradient(90deg, #dcf3b8, transparent); }
+
+  /* ===== 技能表 ===== */
+  .sk-table { width: 100%; border-collapse: collapse; }
+  .sk-table th, .sk-table td { padding: 2.5px 6px; vertical-align: top; text-align: left; }
+  .sk-table th { font-size: 12.5px; border-bottom: 1px solid #dcf3b8; width: 92px; color: #0e0e0e; }
+  .sk-table td { font-size: 11.5px; color: #1f2937; border-bottom: 1px solid #f4f9ec; }
+  .sk-note { font-size: 10.5px; color: #6b7280; margin-top: 2px; }
+  .sk-proof { color: #4b5563; }
+
+  /* ===== 个人项目(开源)卡 ===== */
+  .os { background: #fbfef4; border: 1px solid #e3f3c3; border-radius: 6px; padding: 8px 11px; margin-bottom: 5px; }
+  .os-h { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+  .os-n { font-size: 14px; font-weight: 700; color: #0e0e0e; }
+  .os-m { font-size: 10.5px; color: #6b7280; white-space: nowrap; }
+  .os-d { font-size: 12px; color: #4b5563; margin-top: 2px; line-height: 1.55; }
+
+  /* ===== 公司项目行 ===== */
+  .cp-row { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; padding: 2.5px 0; border-bottom: 1px dashed #e8f2d4; }
+  .cp-name { font-size: 12.5px; font-weight: 700; color: #0e0e0e; }
+  .cp-desc { font-size: 11px; color: #4b5563; text-align: right; line-height: 1.5; max-width: 62%; }
+
+  /* ===== 职业履历 ===== */
+  .ex { margin-bottom: 9px; }
+  .ex-h { display: flex; justify-content: space-between; align-items: baseline; }
+  .ex-co { font-size: 16px; font-weight: 700; color: #0e0e0e; }
+  .ex-p { font-size: 12px; color: #6b7280; white-space: nowrap; }
+  .ex-role { font-size: 12.5px; color: #4b5563; margin: 2px 0 4px; }
+  .ex-role .chip { font-size: 10.5px; background: #f2f1ea; color: #374151; border-radius: 3px; padding: 1px 6px; margin-left: 6px; }
+  .ex-ul { padding-left: 16px; font-size: 12px; color: #1f2937; }
+  .ex-ul li { margin-bottom: 2.5px; line-height: 1.55; }
+  .ex-tg { display: flex; gap: 4px; flex-wrap: wrap; margin: 3px 0 4px; }
+  .ex-tgi { padding: 1px 7px; background: #f4fbe8; color: #43530e; border-radius: 3px; font-size: 10px; font-weight: 500; }
+
+  /* ===== 教育与页脚 ===== */
+  .edu-row { display: flex; justify-content: space-between; padding: 2.5px 0; font-size: 12px; color: #1f2937; border-bottom: 1px solid #f4f9ec; }
+  .ft { font-size: 12.5px; color: #1f2937; padding: 8px 0 0; border-top: 2px solid #dcf3b8; margin-top: 6px; display: flex; gap: 22px; flex-wrap: wrap; }
+  .ft-l { font-weight: 700; color: #43530e; margin-right: 4px; }
+  .credit { text-align: center; font-size: 9px; color: #c0c0c0; margin-top: 10px; letter-spacing: 0.5px; }
+
+  /* ===== 分页控制(res v4 同款) ===== */
+  .os, .cp-row, .edu-row, tr, .hd, .hd-desc, .hd-tags, .ex-h, .ex-role, .ex-tg { break-inside: avoid; page-break-inside: avoid; }
+  .ex, .sc { break-inside: auto; page-break-inside: auto; }
+  .sc-t, .ex-co, .ex-role { break-after: avoid; page-break-after: avoid; }
+  li { orphans: 3; widows: 3; }
+  @media print { .page { padding: 0; } }
+  @media screen { body { background: #e8e8ee; } .page { background: #fff; box-shadow: 0 2px 24px rgba(0,0,0,.12); margin: 16px auto; } }
+</style>
+</head>
+<body><div class="page">
+
+<div class="hd">
+  <div>
+    <div class="hd-name">{{NAME}}</div>
+    <div class="hd-sub">{{HEADLINE}}</div>
+  </div>
+  <div class="hd-r">
+    {{CONTACT_LINES}}
+  </div>
+</div>
+
+<div class="hd-desc">{{SUMMARY}}</div>
+<div class="hd-tags">{{TAGS}}</div>
+
+<div class="sc">
+  <div class="sc-t"><span class="sc-no">01</span>专业技能<span class="sc-line"></span></div>
+  <table class="sk-table"><tbody>{{SKILL_ROWS}}</tbody></table>
+</div>
+
+{{PERSONAL_SECTION}}
+
+<div class="sc">
+  <div class="sc-t"><span class="sc-no">03</span>公司项目<span class="sc-line"></span></div>
+  {{COMPANY_ROWS}}
+</div>
+
+<div class="sc">
+  <div class="sc-t"><span class="sc-no">04</span>职业履历<span class="sc-line"></span></div>
+  {{EXP_BLOCKS}}
+</div>
+
+{{EDU_SECTION}}
+
+<div class="ft">
+  <span><span class="ft-l">目标岗位</span>{{TARGET_ROLE}}</span>
+  <span><span class="ft-l">期望城市</span>{{CITIES}}</span>
+  <span><span class="ft-l">联系</span>{{EMAIL}}</span>
+</div>
+<div class="credit">codeYang 结合 AI 打磨生产 · 内容与在线版实时同步</div>
+
+</div>
+<script>if(new URLSearchParams(location.search).get("print")==="1"){addEventListener("load",function(){setTimeout(function(){print()},400)})}</script>
+</body>
+</html>
