@@ -18,8 +18,12 @@ RUN --mount=type=cache,target=/root/.local/share/pnpm/store \
 # ---------- 构建层 ----------
 FROM deps AS build
 ARG SITE_URL=http://localhost
+ARG NEXT_PUBLIC_ADSENSE_CLIENT=
+ARG NEXT_PUBLIC_ADSENSE_SLOT=
 ENV NEXT_TELEMETRY_DISABLED=1 \
-    SITE_URL=$SITE_URL
+    SITE_URL=$SITE_URL \
+    NEXT_PUBLIC_ADSENSE_CLIENT=$NEXT_PUBLIC_ADSENSE_CLIENT \
+    NEXT_PUBLIC_ADSENSE_SLOT=$NEXT_PUBLIC_ADSENSE_SLOT
 COPY web/ web/
 RUN pnpm --filter @resume/web run build
 

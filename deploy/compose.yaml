@@ -64,6 +64,9 @@ services:
       network: host
       args:
         SITE_URL: ${SITE_URL:-http://localhost}
+        # AdSense（可选，构建期内联进前端产物）：两者齐配才渲染广告位；留空 = 无广告版
+        NEXT_PUBLIC_ADSENSE_CLIENT: ${NEXT_PUBLIC_ADSENSE_CLIENT:-}
+        NEXT_PUBLIC_ADSENSE_SLOT: ${NEXT_PUBLIC_ADSENSE_SLOT:-}
     restart: unless-stopped
     labels:
       resume.project: "CodeYang 在线简历"
@@ -145,6 +148,8 @@ services:
       - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
       # 共享 location 段（nginx.conf / nginx.prod.conf 都 include 它，消除双写漂移）
       - ./nginx/shared-locations.conf:/etc/nginx/shared-locations.conf:ro
+      # k3s Headlamp 面板的 Basic Auth 凭据（生成：htpasswd，见 /home/admin/.k3s-ui-credentials.txt）
+      - /home/admin/.htpasswd-k3s:/etc/nginx/.htpasswd-k3s:ro
     depends_on:
       - web
       - server

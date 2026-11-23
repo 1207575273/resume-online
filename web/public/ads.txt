@@ -1,0 +1,3 @@
+# ads.txt（Authorized Digital Sellers）——Google AdSense 授权卖家声明。
+# 拿到发布商 ID（ca-pub- 后面的纯数字）后，取消下一行注释并替换为你的 ID：
+# google.com, pub-0000000000000000, DIRECT, f08c47fec0942fa0
