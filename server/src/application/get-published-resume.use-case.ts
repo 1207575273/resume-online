@@ -9,7 +9,10 @@ export interface PublishedResumeResult {
   content: ResumeContent;
 }
 
-/** 对外读接口：取某份简历当前发布版本的内容 */
+/** 电话掩码:公开读接口输出 PII 脱敏(完整号码仅线下背调流程提供,库内保留原文供版本管理) */
+const maskPhone = (phone: string) => phone.replace(/(\d{3})\d{4}(\d{4})/, "$1****$2");
+
+/** 对外读接口：取某份简历当前发布版本的内容(证明人电话在响应层脱敏) */
 export class GetPublishedResumeUseCase {
   constructor(private readonly resumes: ResumeRepository) {}
 
@@ -20,10 +23,23 @@ export class GetPublishedResumeUseCase {
     const version = resume.getPublished();
     if (!version) throw new NotFoundError(`简历「${slug}」尚无发布版本`);
 
+    const original = version.content;
+    // deepFreeze 冻结对象不可变:构造浅拷贝替换 experiences 引用(不触碰冻结的子对象)
+    const content = original.experiences.some((e) => e.reference?.phone)
+      ? {
+          ...original,
+          experiences: original.experiences.map((e) =>
+            e.reference?.phone
+              ? { ...e, reference: { ...e.reference, phone: maskPhone(e.reference.phone) } }
+              : e,
+          ),
+        }
+      : original;
+
     return {
       resume: resume.meta,
       version: version.summary(),
-      content: version.content,
+      content,
     };
   }
 }

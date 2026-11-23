@@ -81,9 +81,7 @@ services:
     networks: [internal]
 
   pdf:
-    # 容器化预案（当前 PDF 由宿主机 pdf-host.mjs 承接）：默认不启动，
-    # 切换时 docker compose --profile pdf up -d pdf 并把 nginx 的 /resume.pdf 指回 pdf:3002
-    profiles: ["pdf"]
+    # PDF 导出(独立渲染链):加载 web 的 /resume-print 打印模板 → A4 PDF,支持直接下载
     build:
       context: ../pdf
       dockerfile: Dockerfile
@@ -95,7 +93,7 @@ services:
       resume.service: "PDF 导出 · Playwright 无头浏览器（屏幕级保真）"
       resume.layer: "应用层"
     environment:
-      PDF_PAGE_URL: http://web:3000/
+      PDF_PAGE_URL: http://web:3000/resume-print
     depends_on:
       - web
     networks: [internal]
