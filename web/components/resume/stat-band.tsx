@@ -12,7 +12,7 @@ interface Stat {
 
 /** 数字证据池:整份简历的关键数字,两行芯片墙滚动呈现 */
 const ROW_A: Stat[] = [
-  { value: 20, suffix: " 亿+", label: "Token / 日 · 五层可观测" },
+  { value: 100, suffix: " 亿+", label: "Token / 日 · 五层可观测" },
   { value: 8000, suffix: " 万+", label: "文档渲染 / 年 · 讯飞" },
   { value: 9, prefix: "2.1亿 → ", suffix: " 亿", label: "支撑业务营收" },
   { value: 120, suffix: " 人", label: "Teamspace 日常使用" },

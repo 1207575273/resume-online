@@ -4,7 +4,7 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 
 /** 名字背后滚动的数字证据池(与数字芯片墙同源的关键数字) */
 const NUMBERS = [
-  "20亿+",
+  "100亿+",
   "8000万",
   "120人",
   "400+",

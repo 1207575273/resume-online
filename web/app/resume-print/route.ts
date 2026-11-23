@@ -65,7 +65,7 @@ export async function GET() {
       description:
         "红杉资本投资 · 全球首个 People Search AI Agent（百度百科收录，Superlinear 出品）：自然语言在全球寻找投资人、网红、企业决策者并自动建立初步联络，整合 LinkedIn/GitHub 等 100+ 平台数据，2025.09 全球上线；任职期间公司融资 $100 万 → $500 万，负责工程基建层与架构演进。",
       highlights: [
-        "五层全链路可观测体系（日均 20 亿+ Token）：LLM/工具/业务/API/Trace 分层采集，Kafka+Flink 实时聚合，与 LangSmith 双轨互补",
+        "五层全链路可观测体系（日均 100 亿+ Token）：LLM/工具/业务/API/Trace 分层采集，Kafka+Flink 实时聚合，与 LangSmith 双轨互补",
         "评测平台 Apex：召回（Recall@K/MRR）· 排序（Precision@K/NDCG）· 业务（首轮命中率）三层度量，迭代可回归",
         "单体物理机→Dubbo3→K8s 不停机迁移：协议隔离共存同一 Nacos，48h 并行观察 + 一键回滚",
       ],
