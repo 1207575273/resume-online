@@ -61,6 +61,16 @@ export async function GET() {
   /** 打印版重点项目精修文案(比线上滚动卡更丰富;命中走手写稿,未命中走 API 原文) */
   const PRINT_OVERRIDES: Array<{ match: RegExp; description: string; highlights: string[] }> = [
     {
+      match: /skill-hub/i,
+      description:
+        "团队内部的 Agent Skill 分发平台：门户网站选 skill → 服务端渲染安装脚本 → 本地一条命令装进 Claude Code / Codex / WorkBuddy 的 skills 目录，零安装零依赖。",
+      highlights: [
+        "给人也给 AI 用：门户人选 skill，一条命令落盘，AI 客户端即刻可用",
+        "Anthropic Agent Skills 规范包格式，客户端支持收敛为一张适配表，新增客户端只加一行",
+        "Spring Boot 4.1 + PostgreSQL 17 + React 19（TS strict）monorepo 全栈，Docker Compose 一键交付",
+      ],
+    },
+    {
       match: /lessie/i,
       description:
         "红杉资本投资 · 全球首个 People Search AI Agent（百度百科收录，Superlinear 出品）：自然语言在全球寻找投资人、网红、企业决策者并自动建立初步联络，整合 LinkedIn/GitHub 等 100+ 平台数据，2025.09 全球上线；任职期间公司融资 $100 万 → $500 万，负责工程基建层与架构演进。",
