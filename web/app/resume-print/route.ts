@@ -28,11 +28,10 @@ export async function GET() {
   ]);
 
   const p = d.profile;
-  // 打印版不放「本站」卡:PDF 语境下指向自身主页的链接无信息量(线上滚动卡保留)
-  const personal = d.projects.filter(
-    (x) => x.kind === "personal" && !/codeyang-resume|本站/.test(x.name),
+  // 打印版剔除:「本站」卡(PDF 语境无信息量)与 landray-claw(与 Teamspace 卡重复)
+  const projects = d.projects.filter(
+    (x) => !/codeyang-resume|本站|landray-claw/i.test(x.name),
   );
-  const company = d.projects.filter((x) => x.kind === "company");
   const cities = p.location?.split("期望")?.[1]?.trim() ?? p.location ?? "";
 
   const contact = [
@@ -59,29 +58,21 @@ export async function GET() {
     })
     .join("");
 
-  const personalSection = personal.length
-    ? `<div class="sc">
-  ${sec("个人项目 · 开源", "02")}
-  ${personal
-    .map(
-      (pr) => `<div class="os">
-    <div class="os-h"><span class="os-n">${esc(pr.name)}</span>${
-        pr.link ? `<a class="os-m" href="${esc(pr.link)}">${/github/i.test(pr.link) ? "GitHub 源码" : "链接"} ↗</a>` : ""
-      }</div>
+  const projectCards = projects
+    .map((pr) => {
+      const kindTag =
+        pr.kind === "company"
+          ? `<span class="os-k company">公司项目</span>`
+          : `<span class="os-k personal">个人项目</span>`;
+      const link = pr.link
+        ? `<a class="os-m" href="${esc(pr.link)}">${pr.kind === "company" ? "官网" : /github/i.test(pr.link) ? "GitHub 源码" : "链接"} ↗</a>`
+        : "";
+      return `<div class="os">
+    <div class="os-h"><span class="os-n">${esc(pr.name)}${kindTag}</span>${link}</div>
     <div class="os-d">${esc(pr.description)}</div>
     ${(pr.highlights ?? []).slice(0, 1).map((h) => `<li>${esc(brief(h))}</li>`).join("")}
-  </div>`,
-    )
-    .join("")}
-</div>`
-    : "";
-
-  const companyRows = company
-    .map(
-      (pr) => `<div class="cp-row"><span class="cp-name">${esc(pr.name)}${
-        pr.link ? ` <a href="${esc(pr.link)}" style="font-weight:400;font-size:10.5px">官网 ↗</a>` : ""
-      }</span><span class="cp-desc">${esc(pr.description)}</span></div>`,
-    )
+  </div>`;
+    })
     .join("");
 
   const expBlocks = d.experiences
@@ -99,7 +90,7 @@ export async function GET() {
 
   const eduSection = d.education.length
     ? `<div class="sc">
-  ${sec("教育背景", "05")}
+  ${sec("教育背景", "04")}
   ${d.education
     .map(
       (edu) =>
@@ -116,8 +107,7 @@ export async function GET() {
     .replace("{{SUMMARY}}", esc(p.summary))
     .replace("{{TAGS}}", (p.tags ?? []).map((t) => `<span class="tag">${esc(t)}</span>`).join(""))
     .replace("{{SKILL_ROWS}}", skillRows)
-    .replace("{{PERSONAL_SECTION}}", personalSection)
-    .replace("{{COMPANY_ROWS}}", companyRows)
+    .replace("{{PROJECT_CARDS}}", projectCards)
     .replace("{{EXP_BLOCKS}}", expBlocks)
     .replace("{{EDU_SECTION}}", eduSection)
     .replace("{{TARGET_ROLE}}", esc(p.headline.split("·")[0]?.trim() ?? ""))
