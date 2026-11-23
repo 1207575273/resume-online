@@ -90,7 +90,10 @@ const sec = (title: string, no: string) =>
 export async function GET() {
   const { content: d } = await fetchPublishedResume();
   const p = d.profile;
-  const personal = d.projects.filter((x) => x.kind === "personal");
+  // 打印版不放「本站」卡:PDF 语境下指向自身主页的链接无信息量(线上滚动卡保留)
+  const personal = d.projects.filter(
+    (x) => x.kind === "personal" && !/codeyang-resume|本站/.test(x.name),
+  );
   const company = d.projects.filter((x) => x.kind === "company");
   const cities = p.location?.split("期望")?.[1]?.trim() ?? p.location ?? "";
 
