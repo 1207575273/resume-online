@@ -28,10 +28,6 @@ export async function GET() {
   ]);
 
   const p = d.profile;
-  // 打印版剔除:「本站」卡(PDF 语境无信息量)与 landray-claw(与 Teamspace 卡重复)
-  const projects = d.projects.filter(
-    (x) => !/codeyang-resume|本站|landray-claw/i.test(x.name),
-  );
   const cities = p.location?.split("期望")?.[1]?.trim() ?? p.location ?? "";
 
   const contact = [
@@ -61,22 +57,12 @@ export async function GET() {
   /** 打印版重点项目精修文案(比线上滚动卡更丰富;命中走手写稿,未命中走 API 原文) */
   const PRINT_OVERRIDES: Array<{ match: RegExp; description: string; highlights: string[] }> = [
     {
-      match: /sp-skills/i,
+      match: /teamspace/i,
       description:
-        "个人与团队沉淀提炼的 Claude Code skill 集（sp = superpower）：每个 skill 独立可用，npx skills add 一条命令装进任意工程，覆盖数据查询 / 信息采集 / 内容生产 / 研发排查四大类。",
+        "蓝凌定制版云端 Agent 工作台（Workbody）：打通需求→原型→研发→测试→交付全链路，支撑小团队规模化项目交付。",
       highlights: [
-        "8 个 skill 覆盖四大类：数据查询（四库只读分析 · 行情技术指标）· 信息采集（搜索 / 趋势 / 热点）· 内容生产（公众号发文流水线）· 研发排查（跨服务日志定位）",
-        "安全设计：数据 skill 两层只读拦截；凭证 example 模板 + 提交钩子拦截永不入库；PolyForm 双重授权，商业边界清晰",
-      ],
-    },
-    {
-      match: /skill-hub/i,
-      description:
-        "团队内部的 Agent Skill 分发平台：门户网站选 skill → 服务端渲染安装脚本 → 本地一条命令装进 Claude Code / Codex / WorkBuddy 的 skills 目录，零安装零依赖。",
-      highlights: [
-        "给人也给 AI 用：门户人选 skill，一条命令落盘，AI 客户端即刻可用",
-        "Anthropic Agent Skills 规范包格式，客户端支持收敛为一张适配表，新增客户端只加一行",
-        "Spring Boot 4.1 + PostgreSQL 17 + React 19（TS strict）monorepo 全栈，Docker Compose 一键交付",
+        "交付模式革新：1 FDE + 1 设计 + 1 项目经理，三人小组端到端交付 ~50 万级项目并可规模化复制；跑通 7 个交付案例",
+        "140+ 人使用 / 20+ 人深度使用；Claude Code + 钉钉 IM + K8s + OpenSandbox 沙箱隔离深度集成",
       ],
     },
     {
@@ -89,9 +75,49 @@ export async function GET() {
         "单体物理机→Dubbo3→K8s 不停机迁移：协议隔离共存同一 Nacos，48h 并行观察 + 一键回滚",
       ],
     },
+    {
+      match: /ccode/i,
+      description:
+        "类 Claude Code 的终端 AI 编程工具（兼容其生态），从 0 到 1 独立构建的开源多模型 Code Agent CLI。",
+      highlights: [
+        "自研 AgentLoop 引擎（AsyncGenerator 事件流）：适配 Claude/GPT-4o/GLM/DeepSeek 等 6+ 模型厂商；MCP 协议 · SubAgent 并行 · 三层 Skill 生态 · 上下文压缩与会话持久化",
+        "453 自动化测试，持续迭代 8 个版本；TypeScript + Ink 5 + React 18 全栈",
+      ],
+    },
+    {
+      match: /Agent Skill 工程/,
+      description:
+        "蓝凌企业 SkillHub（100+ Skill）实践的开源化延伸：sp-skills 沉淀 skill 本体（8 个，数据查询/信息采集/内容生产/研发排查四大类），skill-hub 做团队级分发——门户选 skill → 一条命令装进 Claude Code / Codex，零安装零依赖。",
+      highlights: [
+        "企业内发现 Skill 流通问题 → 沉淀方法论 → 开源化验证：集（sp-skills）与分发（skill-hub）的双层闭环",
+        "安全设计：数据 skill 两层只读拦截；凭证 example 模板 + 提交钩子拦截永不入库；PolyForm 双重授权",
+      ],
+    },
   ];
 
-  const projectCards = projects
+  /**
+   * PDF 项目区白名单(HR/CTO 交叉审视后收敛为 5 张,Teamspace 提权首卡):
+   * sip-cc/本站/智学网平台卡/landray-claw 不进打印版——线上滚动卡保留全量。
+   * sp-skills × skill-hub 合并为一张「Agent Skill 工程」闭环卡。
+   */
+  const skillMergeCard = {
+    name: "Agent Skill 工程 · sp-skills × skill-hub",
+    description: "",
+    highlights: [],
+    tech: [],
+    link: "https://github.com/nodetime/sp-skills",
+    kind: "personal" as const,
+  };
+  const pick = (re: RegExp) => d.projects.find((x) => re.test(x.name));
+  const pdfProjects = [
+    pick(/teamspace/i),
+    pick(/lessie/i),
+    pick(/ccode/i),
+    skillMergeCard,
+    pick(/渲染引擎/),
+  ].filter((x): x is NonNullable<typeof x> => Boolean(x));
+
+  const projectCards = pdfProjects
     .map((pr) => {
       const override = PRINT_OVERRIDES.find((o) => o.match.test(pr.name));
       const description = override?.description ?? pr.description;
