@@ -19,10 +19,12 @@ export interface ResumeProfile {
   tags?: string[];
 }
 
-/** 单项技能：level 为 0-100 熟练度（进度条），缺省 = 只展示名称不打分 */
+/** 单项技能：level 为 0-100 熟练度（分组排序/核心档判定），缺省 = 不打分；
+ *  proof = 一句话生产证据，有 proof 的项以「技能—证据」行展示 */
 export interface SkillItem {
   name: string;
   level?: number;
+  proof?: string;
 }
 
 export interface SkillGroup {

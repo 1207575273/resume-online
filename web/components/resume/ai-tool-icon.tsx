@@ -20,11 +20,17 @@ const ICONS: Array<[RegExp, React.ReactNode]> = [
       <path d="M8.5 6 4 12l4.5 6M15.5 6 20 12l-4.5 6" />
     </g>,
   ],
-  // OpenClaw：三道爪痕
+  // OpenClaw：爪印（主肉垫 + 三趾，粗线更易辨认）
   [
     /openclaw|claw/i,
     <g key="claw">
-      <path d="M6 4.5c2 5 2 8.5 0 12M12 3.5c2 5.5 2 9.5 0 13M18 4.5c-2 5-2 8.5 0 12" />
+      <path
+        d="M12 11.5c2.6 0 5 2 5 4.4 0 2.5-2 3.9-5 3.9s-5-1.4-5-3.9c0-2.4 2.4-4.4 5-4.4Z"
+        strokeLinejoin="round"
+      />
+      <ellipse cx="5.6" cy="10.4" rx="1.9" ry="2.5" />
+      <ellipse cx="12" cy="7.6" rx="1.9" ry="2.6" />
+      <ellipse cx="18.4" cy="10.4" rx="1.9" ry="2.5" />
     </g>,
   ],
   // Workbody：智能体机器人
