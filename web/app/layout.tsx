@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import Script from "next/script";
 import { ChatWidget } from "@/components/chat/chat-widget";
 import { SideDots } from "@/components/resume/side-dots";
 import { SiteNav } from "@/components/resume/site-nav";
@@ -35,19 +36,21 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: [
-    { media: "(prefers-color-scheme: dark)", color: "#050507" },
-    { media: "(prefers-color-scheme: light)", color: "#f5f5f7" },
-  ],
+  themeColor: "#fafaf7",
 };
 
-const themeInitScript = `(function(){try{var t=localStorage.getItem("theme");if(t==="light"){document.documentElement.classList.remove("dark")}}catch(e){}})()`;
+const themeInitScript = `(function(){try{document.documentElement.classList.remove("dark");localStorage.removeItem("theme")}catch(e){}})()`;
+
+/** AdSense 发布商 ID（ca-pub-…）：未配置则整条脚本不注入，站点与无广告版完全一致 */
+const ADSENSE_CLIENT = process.env.NEXT_PUBLIC_ADSENSE_CLIENT;
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="zh-CN" className="dark" suppressHydrationWarning>
+    <html lang="zh-CN" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+        {/* 搜索引擎站长平台验证码将来加在这里（verification.other），如：
+            baidu-site-verification: codeva-xxxx / google-site-verification: xxx */}
       </head>
       <body>
         {/* 无 JS 时入场动画停在 opacity:0——这里直接展开全部内容兜底 */}
@@ -58,6 +61,15 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <SideDots />
         {children}
         <ChatWidget />
+        {ADSENSE_CLIENT && (
+          <Script
+            id="adsbygoogle-init"
+            async
+            strategy="afterInteractive"
+            crossOrigin="anonymous"
+            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}`}
+          />
+        )}
       </body>
     </html>
   );

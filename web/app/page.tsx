@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { AdSlot } from "@/components/ads/ad-slot";
 import { fetchPublishedResume } from "@/lib/api";
 import { EducationSection, SiteFooter } from "@/components/resume/education-footer";
 import { ExperienceSpec } from "@/components/resume/experience-spec";
@@ -40,7 +41,7 @@ export default async function HomePage() {
   return (
     <>
       <main>
-        <Hero profile={content.profile} versionNumber={version.number} versionLabel={version.label} />
+        <Hero profile={content.profile} />
         <StatBand />
         {content.experiences.length > 0 && <ExperienceSpec experiences={content.experiences} />}
         {content.skillGroups.length > 0 && <SkillSpec groups={content.skillGroups} />}
@@ -48,7 +49,14 @@ export default async function HomePage() {
         <EducationSection education={content.education} />
       </main>
 
-      <SiteFooter profile={content.profile} updatedAt={resume.updatedAt} />
+      {/* AdSense 展示位：未配置 NEXT_PUBLIC_ADSENSE_* 时不渲染（与无广告版完全一致） */}
+      <AdSlot className="pb-10" />
+
+      <SiteFooter
+        profile={content.profile}
+        updatedAt={resume.updatedAt}
+        versionNumber={version.number}
+      />
 
       {/* SEO：Person 结构化数据 */}
       <script

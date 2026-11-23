@@ -1,13 +1,12 @@
 import { ArrowUpRight } from "lucide-react";
-import { AuroraField } from "@/components/resume/aurora-field";
+import { HeroName } from "@/components/resume/hero-name";
 import { HeroParallax } from "@/components/resume/hero-parallax";
+import { ParticleField } from "@/components/resume/particle-field";
 import { PrintButton } from "@/components/resume/print-button";
 import type { ResumeProfile } from "@/lib/resume-types";
 
 interface HeroProps {
   profile: ResumeProfile;
-  versionNumber: number;
-  versionLabel: string | null;
 }
 
 /** 简介取前两句作为一句话陈述，控制 Hero 信息量 */
@@ -19,25 +18,18 @@ function firstSentences(summary: string, count = 2): string {
     .trim();
 }
 
-export function Hero({ profile, versionNumber, versionLabel }: HeroProps) {
+export function Hero({ profile }: HeroProps) {
   return (
     <header className="hero-shell" id="top">
       <HeroParallax>
-        <AuroraField />
+        <ParticleField />
 
         <div className="hero-content relative z-10 mx-auto max-w-[880px] px-6 text-center">
-        <p
-          className="animate-in fade-in duration-1000 fill-mode-both text-sm text-[var(--text-dim)]"
-          style={{ animationDelay: "80ms" }}
-        >
-          在线简历{versionLabel ? ` · v${versionNumber}` : ""}
-        </p>
-
         <h1
           className="animate-in fade-in slide-in-from-bottom-6 duration-1000 fill-mode-both mt-5 text-[clamp(3.4rem,9vw,5.6rem)] leading-none font-bold tracking-normal"
           style={{ animationDelay: "160ms" }}
         >
-          {profile.name}
+          <HeroName>{profile.name}</HeroName>
         </h1>
 
         <p
@@ -82,9 +74,9 @@ export function Hero({ profile, versionNumber, versionLabel }: HeroProps) {
         >
           <a
             href={`mailto:${profile.email}`}
-            className="inline-flex items-center gap-1.5 rounded-full bg-[var(--accent-solid)] px-6 py-2.5 text-[15px] font-medium text-white transition-opacity duration-200 hover:opacity-85"
+            className="inline-flex items-center gap-1.5 rounded-full bg-[var(--accent-solid)] px-6 py-2.5 text-[15px] font-semibold text-[#0e0e0e] transition-opacity duration-200 hover:opacity-85"
           >
-            联系我
+            联系方式
           </a>
           {profile.links
             .filter((link) => /github/i.test(link.url))

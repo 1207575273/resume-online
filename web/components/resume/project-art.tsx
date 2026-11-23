@@ -26,9 +26,9 @@ function ArtDefs({ id }: { id: string }) {
   return (
     <defs>
       <linearGradient id={`${id}-grad`} x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0%" stopColor="#2997ff" />
-        <stop offset="55%" stopColor="#7d5fff" />
-        <stop offset="100%" stopColor="#bf5af2" />
+        <stop offset="0%" stopColor="#91e600" />
+        <stop offset="55%" stopColor="#a8ff1a" />
+        <stop offset="100%" stopColor="#d0f93b" />
       </linearGradient>
     </defs>
   );

@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ThemeToggle } from "@/components/resume/theme-toggle";
 
 const LINKS = [
   { href: "#experience", label: "经历" },
@@ -21,7 +20,7 @@ export function SiteNav() {
 
   return (
     <nav className={`site-nav no-print ${scrolled ? "scrolled" : ""}`} aria-label="站内导航">
-      <div className="mx-auto flex h-full max-w-[1080px] items-center justify-between px-6">
+      <div className="mx-auto flex max-w-[1080px] items-center justify-between px-6">
         <a href="#top" className="text-[15px] font-semibold tracking-wide">
           杨胜
         </a>
@@ -39,7 +38,6 @@ export function SiteNav() {
           >
             联系
           </a>
-          <ThemeToggle />
         </div>
       </div>
     </nav>

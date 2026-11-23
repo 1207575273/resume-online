@@ -3,45 +3,31 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* ========== 设计令牌：极光工程档案 ========== */
+/* ========== 设计令牌：hicreator 式暖白 + 柠檬绿单强调（单一主题，无明暗切换）==========
+   lime 三档：#a8ff1a 亮 / #91e600 标准 / #d0f93b 软；文字强调用深绿 #5a7a00 保白底可读 */
 :root {
-  --bg: #f5f5f7;
+  --bg: #fafaf7;
   --surface: #ffffff;
-  --surface-2: #eeeef0;
-  --text: #1d1d1f;
-  --text-dim: #5d5d63;
-  --accent: #0071e3;
-  --accent-solid: #0071e3;
-  --hairline: rgba(0, 0, 0, 0.1);
-  --nav-bg: rgba(245, 245, 247, 0.72);
-  --glass-border: rgba(0, 0, 0, 0.06);
-  --chip-bg: #ececf1;
-  --card-border-hover: rgba(0, 113, 227, 0.38);
-  --card-lift: 0 14px 34px -18px rgba(0, 60, 130, 0.22);
-  --aurora-from: #0071e3;
-}
-
-.dark {
-  --bg: #050507;
-  --surface: #0d0d11;
-  --surface-2: #131318;
-  --text: #f5f5f7;
-  --text-dim: #86868b;
-  --accent: #2997ff;
-  --accent-solid: #0071e3;
-  --hairline: rgba(255, 255, 255, 0.09);
-  --nav-bg: rgba(5, 5, 7, 0.65);
-  --glass-border: rgba(255, 255, 255, 0.08);
-  --chip-bg: #17171e;
-  --card-border-hover: rgba(41, 151, 255, 0.42);
-  --card-lift: 0 18px 42px -20px rgba(0, 0, 0, 0.75);
-  --aurora-from: #2997ff;
+  --surface-2: #f2f1ea;
+  --text: #0e0e0e;
+  --text-dim: #6f6f68;
+  --accent: #5a7a00;
+  --accent-solid: #91e600;
+  --hairline: rgba(37, 44, 53, 0.13);
+  --nav-bg: rgba(250, 250, 247, 0.74);
+  --glass-border: rgba(37, 44, 53, 0.09);
+  --chip-bg: #f2f1ea;
+  --card-border-hover: rgba(145, 230, 0, 0.6);
+  --card-lift: 0 14px 34px -18px rgba(37, 44, 53, 0.2);
+  --lime-bright: #a8ff1a;
+  --lime: #91e600;
+  --lime-soft: #d0f93b;
 }
 
 /* 极光渐变：只用于数字带关键数字（Hero 微光是 .hero-glow）；
    亮色起点加深保证浅底对比度 ≥3:1 */
 .aurora-text {
-  background: linear-gradient(105deg, var(--aurora-from) 0%, #7d5fff 48%, #bf5af2 100%);
+  background: linear-gradient(105deg, #91e600 0%, #a8ff1a 52%, #d0f93b 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -94,21 +80,29 @@
 }
 
 /* ========== 玻璃导航 ========== */
+/* Lessie 式浮岛导航：顶部态完全透明融入首屏；下滑后内层收缩为
+   毛玻璃胶囊浮条（圆角 + hairline + 悬浮阴影，与屏幕边缘留呼吸） */
 .site-nav {
   position: fixed;
   inset-inline: 0;
   top: 0;
   z-index: 50;
+  padding: 10px 14px 0;
+  pointer-events: none;
+}
+.site-nav > div {
+  pointer-events: auto;
   height: 52px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  transition: background 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+}
+.site-nav.scrolled > div {
+  background: var(--nav-bg);
   backdrop-filter: saturate(180%) blur(20px);
   -webkit-backdrop-filter: saturate(180%) blur(20px);
-  background: transparent;
-  border-bottom: 1px solid transparent;
-  transition: background 0.4s ease, border-color 0.4s ease;
-}
-.site-nav.scrolled {
-  background: var(--nav-bg);
-  border-bottom-color: var(--glass-border);
+  border-color: var(--glass-border);
+  box-shadow: 0 10px 34px rgba(0, 0, 0, 0.14);
 }
 .nav-link {
   font-size: 13px;
@@ -136,105 +130,6 @@
   /* 小屏内容高过视口时，为 52px 固定导航留出安全区 */
   padding-top: 52px;
 }
-/* ========== Hero 极光背景：流动绸缎 blob + 工程网格 ========== */
-.aurora-field {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  pointer-events: none;
-}
-.aurora-blob {
-  position: absolute;
-  width: 58vmax;
-  height: 58vmax;
-  border-radius: 50%;
-  filter: blur(72px);
-  opacity: 0.75;
-  will-change: transform;
-}
-.ab-1 {
-  left: -18vmax;
-  top: -20vmax;
-  background: radial-gradient(circle at 35% 35%, rgba(0, 113, 227, 0.34), transparent 64%);
-  animation: aurora-drift-1 44s ease-in-out infinite alternate;
-}
-.ab-2 {
-  right: -22vmax;
-  top: -8vmax;
-  background: radial-gradient(circle at 60% 40%, rgba(125, 95, 255, 0.26), transparent 64%);
-  animation: aurora-drift-2 56s ease-in-out infinite alternate;
-}
-.ab-3 {
-  left: 8vw;
-  bottom: -30vmax;
-  background: radial-gradient(circle at 50% 50%, rgba(191, 90, 242, 0.2), transparent 64%);
-  animation: aurora-drift-3 68s ease-in-out infinite alternate;
-}
-.dark .ab-1 {
-  background: radial-gradient(circle at 35% 35%, rgba(41, 151, 255, 0.3), transparent 64%);
-}
-.dark .ab-2 {
-  background: radial-gradient(circle at 60% 40%, rgba(125, 95, 255, 0.24), transparent 64%);
-}
-.dark .ab-3 {
-  background: radial-gradient(circle at 50% 50%, rgba(191, 90, 242, 0.18), transparent 64%);
-}
-@keyframes aurora-drift-1 {
-  from {
-    transform: translate3d(0, 0, 0) scale(1);
-  }
-  to {
-    transform: translate3d(9vw, 7vh, 0) scale(1.18);
-  }
-}
-@keyframes aurora-drift-2 {
-  from {
-    transform: translate3d(0, 0, 0) scale(1.1);
-  }
-  to {
-    transform: translate3d(-8vw, 10vh, 0) scale(0.92);
-  }
-}
-@keyframes aurora-drift-3 {
-  from {
-    transform: translate3d(0, 0, 0) scale(0.95);
-  }
-  to {
-    transform: translate3d(6vw, -8vh, 0) scale(1.15);
-  }
-}
-/* WebGL 着色器画布（CSS blob 作为兜底层；着色器就位后 blob 降为衬托） */
-.aurora-canvas {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-}
-.webgl-on .aurora-blob {
-  opacity: 0.3;
-}
-
-/* 工程网格：极淡发丝线，径向渐隐只留中心区域 */
-.aurora-grid {
-  position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(var(--hairline) 1px, transparent 1px),
-    linear-gradient(90deg, var(--hairline) 1px, transparent 1px);
-  background-size: 56px 56px;
-  -webkit-mask-image: radial-gradient(58% 52% at 50% 44%, #000 0%, transparent 78%);
-  mask-image: radial-gradient(58% 52% at 50% 44%, #000 0%, transparent 78%);
-  opacity: 0.55;
-}
-/* 移动端：少一个 blob、blur 收一点，保帧率 */
-@media (max-width: 767px) {
-  .ab-3 {
-    display: none;
-  }
-  .aurora-blob {
-    filter: blur(56px);
-  }
-}
 
 /* ========== Hero 滚动视差（--p 由 HeroParallax 写入，0→1）========== */
 .hero-parallax {
@@ -250,9 +145,67 @@
   opacity: max(calc(1 - var(--p, 0) * 1.2), 0);
   will-change: transform, opacity;
 }
-.hero-parallax .aurora-field {
-  transform: translateY(calc(var(--p, 0) * 12vh));
-  will-change: transform;
+/* ========== Hero 名字背后的 lime 数字动效(hicreator 式)========== */
+.hero-name-wrap {
+  position: relative;
+  display: inline-block;
+  cursor: default;
+  -webkit-tap-highlight-color: transparent;
+}
+/* 名字背后的大数字 ticker:平时低调滚动,触碰点亮(亮 lime + 加速 + 辉光) */
+.num-back {
+  position: absolute;
+  left: -30vw;
+  right: -30vw;
+  top: 50%;
+  transform: translateY(-58%);
+  height: 0.62em;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: -1;
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 14%, #000 86%, transparent);
+  mask-image: linear-gradient(to right, transparent, #000 14%, #000 86%, transparent);
+}
+.num-track {
+  display: flex;
+  gap: 0.5em;
+  width: max-content;
+  padding-left: 0.2em;
+  animation: hero-nums 26s linear infinite;
+  font-size: 0.52em;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  color: #91e600;
+  opacity: 0.3;
+  transition: opacity 0.35s ease, color 0.35s ease, filter 0.35s ease;
+}
+.hero-name-wrap.lit .num-track {
+  opacity: 0.92;
+  color: #a8ff1a;
+  animation-duration: 7s;
+  filter: drop-shadow(0 2px 14px rgba(145, 230, 0, 0.45));
+}
+.num-track span {
+  white-space: nowrap;
+}
+@keyframes hero-nums {
+  to {
+    transform: translateX(-50%);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .num-track {
+    animation: none;
+    opacity: 0.25;
+  }
+}
+@media print {
+  .num-back {
+    display: none;
+  }
 }
 
 /* ========== Hero 定位标签 ========== */
@@ -274,55 +227,96 @@
 }
 /* 含 ¥ 的强调版（如「Claude Code 自费 ¥30,000+」） */
 .hero-tag-hot {
-  border-color: rgba(0, 113, 227, 0.45);
-  color: var(--accent);
+  border-color: rgba(145, 230, 0, 0.55);
+  color: #5a7a00;
   font-weight: 500;
-}
-.dark .hero-tag-hot {
-  border-color: rgba(41, 151, 255, 0.5);
+  background: rgba(208, 249, 59, 0.18);
 }
 
-/* ========== 技能熟练度 ========== */
-.skill-level {
+/* ========== 技能：证据型规格表 ========== */
+.skill-block {
+  padding: 1.1rem 0;
+  border-bottom: 1px solid var(--hairline);
+}
+.skill-block:last-child {
+  border-bottom: none;
+}
+.skill-gname {
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--text-dim);
+}
+.skill-note {
+  font-size: 12px;
+  color: var(--text-dim);
+  opacity: 0.85;
+}
+/* 证据行：技能名 —— 生产证据 */
+.ev-row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.55rem;
+  padding: 0.22rem 0;
+}
+.ev-skill {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+}
+.ev-dash {
+  width: 14px;
+  height: 1px;
+  flex-shrink: 0;
+  transform: translateY(-3px);
+  background: #91e600;
+  opacity: 0.55;
+}
+.ev-proof {
   font-size: 12.5px;
   color: var(--text-dim);
-  font-feature-settings: "tnum";
-  font-variant-numeric: tabular-nums;
+  line-height: 1.6;
 }
-.skill-track {
-  margin-top: 6px;
-  height: 3px;
-  border-radius: 999px;
-  background: var(--chip-bg);
-  overflow: hidden;
+/* 「另有」次要技能灰字流 */
+.ev-rest {
+  margin-top: 0.45rem;
+  font-size: 12px;
+  color: var(--text-dim);
+  opacity: 0.72;
+  line-height: 1.75;
 }
-.dark .skill-track {
-  background: rgba(255, 255, 255, 0.13);
-}
-.skill-fill {
-  height: 100%;
-  width: var(--level, 0%);
-  border-radius: inherit;
-  background: var(--accent);
-  transform: scaleX(0);
-  transform-origin: left center;
-  transition: transform 1s cubic-bezier(0.2, 0.65, 0.25, 1) 0.15s;
-}
-.revealed .skill-fill {
-  transform: none;
-}
-.skill-badge {
+/* 图标组芯片（AI 工具类）：图标 + 名称；核心档实底渐变 */
+.tool-chips {
+  margin-top: 0.6rem;
   display: flex;
-  align-items: center;
-  gap: 0.8rem;
-  padding: 0.85rem 1rem;
-  border: 1px solid var(--hairline);
-  border-radius: 14px;
-  background: var(--surface);
-  transition: border-color 0.3s ease;
+  flex-wrap: wrap;
+  gap: 0.45rem;
 }
-.skill-badge:hover {
+.tool-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.3rem 0.75rem;
+  border-radius: 999px;
+  border: 1px solid var(--hairline);
+  background: var(--surface);
+  font-size: 13px;
+  color: var(--text);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.tool-chip.core {
+  border-color: transparent;
+  font-weight: 600;
+  background: linear-gradient(100deg, rgba(145, 230, 0, 0.16), rgba(208, 249, 59, 0.2));
+  box-shadow: inset 0 0 0 1px rgba(145, 230, 0, 0.5);
+}
+.tool-chip:hover {
   border-color: var(--card-border-hover);
+}
+.tool-chip.core:hover {
+  box-shadow: inset 0 0 0 1px rgba(145, 230, 0, 0.85);
 }
 
 /* ========== 数字带 ========== */
@@ -417,24 +411,87 @@
   border: 1px solid var(--hairline);
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
-.dark .card {
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0) 36%), #0d0d11;
-}
 .card:hover {
   border-color: var(--card-border-hover);
   box-shadow: var(--card-lift);
 }
 
-/* ========== 项目视觉图：深空屏（两主题恒定深底亮线）========== */
+/* ========== 项目横向滚动（marquee）========== */
+.project-marquee {
+  overflow: hidden;
+  /* 两侧渐隐,暗示可滚动方向;给 hover 阴影留出上下呼吸 */
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent,
+    #000 5%,
+    #000 95%,
+    transparent
+  );
+  mask-image: linear-gradient(to right, transparent, #000 5%, #000 95%, transparent);
+}
+.marquee-track {
+  display: flex;
+  width: max-content;
+  padding-block: 0.5rem;
+  animation: project-marquee 45s linear infinite;
+}
+/* 每组自带对称内距(=半个 gap):双份内容时 -50% 位移精确落在组边界,无缝循环 */
+.marquee-group {
+  display: flex;
+  align-items: stretch;
+  gap: 1.25rem;
+  padding-inline: 0.625rem;
+}
+/* 滚动卡内视觉图压扁为装饰横条(slice 裁剪不变形),省出的高度留给文字 */
+.project-marquee .art-stroke {
+  aspect-ratio: 16 / 5.5;
+}
+.project-marquee:hover .marquee-track,
+.project-marquee:focus-within .marquee-track {
+  animation-play-state: paused;
+}
+@keyframes project-marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* ========== 数字证据芯片墙(复用 marquee 骨架,独立节奏)========== */
+.stat-track {
+  animation-duration: 52s;
+  padding-block: 0.25rem;
+}
+.stat-rev .marquee-track {
+  animation-direction: reverse;
+  animation-duration: 61s;
+}
+.stat-chip-num {
+  font-size: 1.3rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.15;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+  white-space: nowrap;
+}
+/* 数字单位/前缀:lime 只给数字的"单位",hicreator 式点睛 */
+.stat-unit {
+  font-size: 0.55em;
+  font-weight: 700;
+  color: #729c00;
+}
+
+/* ========== 项目视觉图:深空屏(恒定暖黑底 + lime 亮线,与暖白页面对撞)========== */
 .art {
   display: block;
   width: 100%;
   height: auto;
   color: #fff;
   background:
-    radial-gradient(90% 85% at 16% 6%, rgba(41, 151, 255, 0.22), transparent 62%),
-    radial-gradient(80% 75% at 90% 98%, rgba(191, 90, 242, 0.18), transparent 58%),
-    linear-gradient(180deg, #0d0d16, #08080f);
+    radial-gradient(90% 85% at 16% 6%, rgba(145, 230, 0, 0.16), transparent 62%),
+    radial-gradient(80% 75% at 90% 98%, rgba(168, 255, 26, 0.12), transparent 58%),
+    linear-gradient(180deg, #141410, #0a0a08);
 }
 .art-stroke {
   aspect-ratio: 16 / 8.5;
@@ -446,12 +503,6 @@
   border-inline-start: 1px solid rgba(255, 255, 255, 0.06);
 }
 /* 暗色下图面抬亮半档，与卡面拉开，保住"屏"的边界 */
-.dark .art {
-  background:
-    radial-gradient(90% 85% at 16% 6%, rgba(41, 151, 255, 0.24), transparent 62%),
-    radial-gradient(80% 75% at 90% 98%, rgba(191, 90, 242, 0.2), transparent 58%),
-    linear-gradient(180deg, #14141f, #0a0a13);
-}
 /* featured 卡在移动端：视觉图降为普通横条，避免大块深色占屏 */
 @media (max-width: 767px) {
   .art-side {
@@ -500,12 +551,14 @@
   .animate-in {
     animation: none;
   }
-  .aurora-blob {
+  /* marquee 退化为可横滑:内容仍可达,只是不再自动滚 */
+  .marquee-track {
     animation: none;
   }
-  .skill-fill {
-    transition: none;
-    transform: none;
+  .project-marquee {
+    overflow-x: auto;
+    -webkit-mask-image: none;
+    mask-image: none;
   }
 }
 
@@ -520,16 +573,7 @@
 /* ========== 打印 ========== */
 @media print {
   /* 暗色是默认主题：打印前强制回归亮色变量，否则白纸白字 */
-  .dark {
-    --text: #1d1d1f;
-    --text-dim: #6e6e73;
-    --surface: #ffffff;
-    --surface-2: #eeeef0;
-    --chip-bg: #ececf1;
-    --hairline: rgba(0, 0, 0, 0.1);
-    --accent: #0071e3;
-  }
-  .no-print {
+    .no-print {
     display: none !important;
   }
   .hero-shell {
@@ -548,12 +592,6 @@
   .art {
     display: none;
   }
-  .aurora-field {
-    display: none;
-  }
-  .skill-fill {
-    transform: none;
-  }
   .card {
     display: block !important;
     box-shadow: none;
@@ -566,4 +604,27 @@
     opacity: 1;
     transform: none;
   }
+  /* marquee 退化为网格:副本隐藏、正本换行,PDF 保真不丢项目 */
+  .project-marquee {
+    overflow: visible;
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+  .marquee-track {
+    animation: none;
+    display: block;
+  }
+  .marquee-group {
+    flex-wrap: wrap;
+    padding-inline: 1.25rem;
+  }
+  .marquee-group[aria-hidden="true"] {
+    display: none;
+  }
+}
+
+/* ========== AdSense 展示位 ========== */
+/* 最小高度占位：广告未填充/被拦截时避免布局塌陷抖动（CLS） */
+.ad-ins {
+  min-height: 90px;
 }
