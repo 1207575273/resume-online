@@ -65,9 +65,8 @@ export async function GET() {
       description:
         "个人与团队沉淀提炼的 Claude Code skill 集（sp = superpower）：每个 skill 独立可用，npx skills add 一条命令装进任意工程，覆盖数据查询 / 信息采集 / 内容生产 / 研发排查四大类。",
       highlights: [
-        "8 个 skill：db-analyzer（MySQL/PG/Oracle/SQLite 只读分析）· market-analyzer（行情技术指标）· web-search · github-trending · cn-hotspot · wechat-post（公众号发文流水线）· landray-log（跨服务日志排查）",
-        "安全设计：数据 skill 两层只读拦截（应用层门禁+引擎强制）；凭证一律 example 模板 + 提交钩子拦截，永不入库",
-        "PolyForm 小企业双重授权：个人与非商业免费，商业边界清晰",
+        "8 个 skill 覆盖四大类：数据查询（四库只读分析 · 行情技术指标）· 信息采集（搜索 / 趋势 / 热点）· 内容生产（公众号发文流水线）· 研发排查（跨服务日志定位）",
+        "安全设计：数据 skill 两层只读拦截；凭证 example 模板 + 提交钩子拦截永不入库；PolyForm 双重授权，商业边界清晰",
       ],
     },
     {
