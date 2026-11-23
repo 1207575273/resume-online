@@ -27,7 +27,7 @@ const maskPhone = (phone: string) => phone.replace(/(\d{3})\d{4}(\d{4})/, "$1***
 function ReferenceLine({ reference }: { reference?: ExperienceReference }) {
   if (!reference) return null;
   const parts = [
-    "背调",
+    "证明人",
     reference.name,
     reference.title,
     reference.phone ? maskPhone(reference.phone) : undefined,
