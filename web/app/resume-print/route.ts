@@ -61,6 +61,16 @@ export async function GET() {
   /** 打印版重点项目精修文案(比线上滚动卡更丰富;命中走手写稿,未命中走 API 原文) */
   const PRINT_OVERRIDES: Array<{ match: RegExp; description: string; highlights: string[] }> = [
     {
+      match: /sp-skills/i,
+      description:
+        "个人与团队沉淀提炼的 Claude Code skill 集（sp = superpower）：每个 skill 独立可用，npx skills add 一条命令装进任意工程，覆盖数据查询 / 信息采集 / 内容生产 / 研发排查四大类。",
+      highlights: [
+        "8 个 skill：db-analyzer（MySQL/PG/Oracle/SQLite 只读分析）· market-analyzer（行情技术指标）· web-search · github-trending · cn-hotspot · wechat-post（公众号发文流水线）· landray-log（跨服务日志排查）",
+        "安全设计：数据 skill 两层只读拦截（应用层门禁+引擎强制）；凭证一律 example 模板 + 提交钩子拦截，永不入库",
+        "PolyForm 小企业双重授权：个人与非商业免费，商业边界清晰",
+      ],
+    },
+    {
       match: /skill-hub/i,
       description:
         "团队内部的 Agent Skill 分发平台：门户网站选 skill → 服务端渲染安装脚本 → 本地一条命令装进 Claude Code / Codex / WorkBuddy 的 skills 目录，零安装零依赖。",
