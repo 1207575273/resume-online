@@ -14,7 +14,8 @@ export function PrintButton() {
     if (busy) return;
     setBusy(true);
     try {
-      const response = await fetch(`/resume.pdf?t=${Date.now()}`);
+      // 不带时间戳:让 ETag 协商缓存生效(版本没变 → 304 零传输)
+      const response = await fetch("/resume.pdf");
       if (!response.ok) throw new Error(String(response.status));
       const blob = await response.blob();
       const url = URL.createObjectURL(blob);
