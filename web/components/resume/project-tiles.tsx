@@ -52,23 +52,30 @@ export function ProjectTiles({ projects }: { projects: ProjectItem[] }) {
   );
 }
 
-/** 副本卡（interactive=false）内的链接移出 Tab 序：键盘用户不重复命中同一目标 */
+/** 副本卡（interactive=false）内的链接移出 Tab 序：键盘用户不重复命中 */
 type LinkProps = { interactive: boolean };
-const linkTabIndex = ({ interactive }: LinkProps) => (interactive ? undefined : -1);
+const tabIndex = ({ interactive }: LinkProps) => (interactive ? undefined : -1);
 
-/** 卡片右上角的圆形外链按钮：44px 触达区，压在整卡拉伸链接之上 */
-function CardLink({ name, link, interactive }: { name: string; link?: string } & LinkProps) {
-  if (!link) return null;
+/** 链接语义化:公司项目 → 「官网」(产品官网),个人项目 → 「源码」(GitHub 仓库);
+ *  没有链接的项目不渲染按钮 */
+function CardLink({
+  kind,
+  url,
+  interactive,
+}: { kind?: ProjectItem["kind"]; url?: string } & LinkProps) {
+  if (!url) return null;
+  const label = kind === "company" ? "官网" : "源码";
   return (
     <a
-      href={link}
+      href={url}
       target="_blank"
       rel="noreferrer noopener"
-      aria-label={`打开 ${name}`}
-      tabIndex={linkTabIndex({ interactive })}
-      className="relative z-10 mt-0.5 inline-flex size-11 shrink-0 items-center justify-center rounded-full border border-[var(--hairline)] text-[var(--text-dim)] transition-colors duration-200 group-hover:border-[var(--card-border-hover)] group-hover:text-[var(--accent)] hover:border-[var(--card-border-hover)] hover:text-[var(--accent)]"
+      aria-label={`打开${label}`}
+      tabIndex={tabIndex({ interactive })}
+      className="relative z-10 inline-flex shrink-0 items-center gap-1 rounded-full border border-[var(--hairline)] px-3 py-1 text-[12px] font-medium text-[var(--text-dim)] transition-colors duration-200 group-hover:border-[var(--card-border-hover)] group-hover:text-[#5a7a00] hover:border-[var(--card-border-hover)] hover:text-[#5a7a00]"
     >
-      <ArrowUpRight className="size-[18px]" aria-hidden />
+      {label}
+      <ArrowUpRight className="size-3.5" aria-hidden />
     </a>
   );
 }
@@ -87,23 +94,12 @@ function CardTitle({
         href={link}
         target="_blank"
         rel="noreferrer noopener"
-        tabIndex={linkTabIndex({ interactive })}
+        tabIndex={tabIndex({ interactive })}
         className="after:absolute after:inset-0"
       >
         {name}
       </a>
     </h3>
-  );
-}
-
-function TechChips({ tech }: { tech?: string[] }) {
-  if (!tech || tech.length === 0) return null;
-  return (
-    <ul className="flex flex-wrap gap-1.5">
-      {tech.map((item) => (
-        <Chip key={item}>{item}</Chip>
-      ))}
-    </ul>
   );
 }
 
@@ -132,25 +128,33 @@ function MarqueeCard({
   return (
     <article
       data-slot="card"
-      className="card group flex h-full w-[300px] flex-col overflow-hidden p-6 sm:w-[340px]"
+      className="card group flex h-full w-[300px] flex-col overflow-hidden p-5 sm:w-[340px]"
     >
+      {/* 行1:标题 + 语义化链接(官网/源码,无链接则不渲染) */}
       <div className="flex items-start justify-between gap-3">
-        <KindTag kind={project.kind} />
-        <CardLink name={project.name} link={project.link} interactive={interactive} />
+        <CardTitle
+          name={project.name}
+          link={project.link}
+          interactive={interactive}
+          className="text-[1.02rem] leading-snug font-semibold"
+        />
+        <CardLink
+          kind={project.kind}
+          url={project.link}
+          interactive={interactive}
+        />
       </div>
-      <CardTitle
-        name={project.name}
-        link={project.link}
-        interactive={interactive}
-        className="mt-2 text-[1.05rem] leading-snug font-semibold"
-      />
-      <p className="mt-2 text-[14px] leading-relaxed text-[var(--text-dim)]">
+      {/* 行2:归属标签 + 技术栈合并一行,压掉单独区块的空白 */}
+      {(project.kind || (project.tech?.length ?? 0) > 0) && (
+        <div className="mt-2.5 flex flex-wrap items-center gap-1.5">
+          <KindTag kind={project.kind} />
+          {project.tech?.map((item) => <Chip key={item}>{item}</Chip>)}
+        </div>
+      )}
+      <p className="mt-2.5 text-[13.5px] leading-relaxed text-[var(--text-dim)]">
         {project.description}
       </p>
       <Highlights items={project.highlights ?? []} className="mt-3" />
-      <div className="mt-auto pt-4">
-        <TechChips tech={project.tech} />
-      </div>
     </article>
   );
 }
