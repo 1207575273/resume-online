@@ -26,17 +26,12 @@ const maskPhone = (phone: string) => phone.replace(/(\d{3})\d{4}(\d{4})/, "$1***
 
 function ReferenceLine({ reference }: { reference?: ExperienceReference }) {
   if (!reference) return null;
-  const parts = [
-    "证明人",
-    reference.name,
-    reference.title,
-    reference.phone ? maskPhone(reference.phone) : undefined,
-  ].filter(Boolean);
   return (
-    <p className="mt-3 text-[12.5px] leading-relaxed text-[var(--text-dim)]">
-      {parts.slice(0, 2).join("：")}
-      {reference.title && <span className="opacity-80"> · {reference.title}</span>}
-      {reference.phone && <span className="opacity-80"> · {maskPhone(reference.phone)}</span>}
+    <p className="mt-3 inline-flex max-w-full flex-wrap items-center gap-x-2 rounded-lg bg-[rgba(208,249,59,0.2)] px-3 py-1.5 text-[12.5px] font-medium text-[#5a7a00] shadow-[inset_0_0_0_1px_rgba(145,230,0,0.45)]">
+      <span className="font-bold">证明人</span>
+      <span>{reference.name}</span>
+      {reference.title && <span>· {reference.title}</span>}
+      {reference.phone && <span className="font-semibold">· {maskPhone(reference.phone)}</span>}
     </p>
   );
 }
