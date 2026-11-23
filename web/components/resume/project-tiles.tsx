@@ -103,7 +103,7 @@ function CardTitle({
   );
 }
 
-/** 项目归属角标:个人项目 lime 描边 / 公司项目中性灰;缺省不渲染 */
+/** 项目归属角标:个人项目 lime / 公司项目辅助蓝(hicreator 双品牌色),缺省不渲染 */
 function KindTag({ kind }: { kind?: ProjectItem["kind"] }) {
   if (kind !== "personal" && kind !== "company") return null;
   const personal = kind === "personal";
@@ -112,7 +112,7 @@ function KindTag({ kind }: { kind?: ProjectItem["kind"] }) {
       className={`inline-flex shrink-0 items-center rounded-full px-2.5 py-0.5 text-[10.5px] font-semibold tracking-wide ${
         personal
           ? "bg-[rgba(208,249,59,0.18)] text-[#5a7a00] shadow-[inset_0_0_0_1px_rgba(145,230,0,0.45)]"
-          : "bg-[var(--chip-bg)] text-[var(--text-dim)] shadow-[inset_0_0_0_1px_var(--hairline)]"
+          : "bg-[rgba(131,189,230,0.18)] text-[#3a6491] shadow-[inset_0_0_0_1px_rgba(75,113,156,0.4)]"
       }`}
     >
       {personal ? "个人项目" : "公司项目"}
