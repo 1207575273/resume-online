@@ -1,10 +1,8 @@
-# PDF 导出服务：node:22-alpine + 系统 Chromium + 中文字体
-# 慢网络加速：apk 用阿里云镜像、npm 用 npmmirror
+# PDF 导出服务:node:22-alpine + 系统 Chromium + 中文字体
+# HK 机器直连官方 CDN 速度最优;font-noto-sc 已并入 font-noto-cjk(新版 Alpine 无此包)
 FROM node:22-alpine
 
-RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories \
- && apk add --no-cache chromium nss freetype harfbuzz ca-certificates ttf-freefont \
- && apk add --no-cache font-noto-cjk font-noto-sc
+RUN apk add --no-cache chromium nss freetype harfbuzz ca-certificates ttf-freefont font-noto-cjk
 
 WORKDIR /app
 COPY package.json ./
