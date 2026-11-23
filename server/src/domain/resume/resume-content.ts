@@ -39,6 +39,8 @@ export interface SkillGroup {
 
 export interface ExperienceItem {
   company: string;
+  /** 公司/产品官网(嵌入经历头部的「官网 ↗」链接);缺省不渲染 */
+  companyUrl?: string;
   /** 公司名旁的小标签（如「百得思维 · 讯飞子公司 · 内包」），说明用工主体 */
   companyTag?: string;
   role: string;
@@ -157,6 +159,7 @@ export function createResumeContent(raw: unknown): ResumeContent {
     const exp = asRecord(item, "content.experiences[]");
     return {
       company: str(exp, "company", "experiences[]")!,
+      companyUrl: str(exp, "companyUrl", "experiences[]", true),
       companyTag: str(exp, "companyTag", "experiences[]", true),
       role: str(exp, "role", "experiences[]")!,
       start: str(exp, "start", "experiences[]")!,

@@ -1,7 +1,25 @@
+import { ArrowUpRight } from "lucide-react";
 import { formatPeriod } from "@/lib/api";
 import { Chip } from "@/components/resume/chip";
 import { Highlights } from "@/components/resume/highlights";
 import type { ExperienceItem } from "@/lib/resume-types";
+
+/** 经历头部的官网链接:与项目区「官网 ↗」同语言;缺省不渲染 */
+function CompanyLink({ url }: { url?: string }) {
+  if (!url) return null;
+  return (
+    <a
+      href={url}
+      target="_blank"
+      rel="noreferrer noopener"
+      aria-label="打开公司官网"
+      className="inline-flex shrink-0 items-center gap-1 rounded-full border border-[var(--hairline)] px-3 py-1 text-[12px] font-medium text-[var(--text-dim)] transition-colors duration-200 hover:border-[var(--card-border-hover)] hover:text-[#5a7a00]"
+    >
+      官网
+      <ArrowUpRight className="size-3.5" aria-hidden />
+    </a>
+  );
+}
 
 /**
  * 经历：规格表形态——左列公司与时间，右列叙事与成果，发丝线分节。
@@ -31,11 +49,16 @@ export function ExperienceSpec({ experiences }: { experiences: ExperienceItem[] 
               <span className="tl-dot" aria-hidden />
               <div>
                 <p className="spec-time">{formatPeriod(exp.start, exp.end)}</p>
-                <h3 className="mt-2 flex flex-wrap items-center gap-2 text-lg leading-snug font-semibold">
-                  {exp.company}
-                  {exp.companyTag && <span className="chip font-normal">{exp.companyTag}</span>}
-                </h3>
-                <p className="mt-1.5 text-[15px] text-[var(--text-dim)]">{exp.role}</p>
+                <div className="mt-2 flex flex-wrap items-center gap-2">
+                  <h3 className="text-lg leading-snug font-semibold">{exp.company}</h3>
+                  <CompanyLink url={exp.companyUrl} />
+                </div>
+                <p className="mt-1.5 flex flex-wrap items-center gap-2 text-[15px] text-[var(--text-dim)]">
+                  <span>{exp.role}</span>
+                  {exp.companyTag && (
+                    <span className="chip font-normal">{exp.companyTag}</span>
+                  )}
+                </p>
                 {exp.tech.length > 0 && (
                   <ul className="mt-4 flex flex-wrap gap-1.5">
                     {exp.tech.map((item) => (
