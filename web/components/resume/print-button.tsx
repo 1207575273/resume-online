@@ -45,7 +45,7 @@ export function PrintButton() {
       ) : (
         <FileDown className="size-4" aria-hidden />
       )}
-      {busy ? "生成中…" : "下载 PDF"}
+      {busy ? "生成中…" : "下载 PDF 简历"}
     </button>
   );
 }
