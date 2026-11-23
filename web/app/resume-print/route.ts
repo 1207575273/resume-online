@@ -58,8 +58,27 @@ export async function GET() {
     })
     .join("");
 
+  /** 打印版重点项目精修文案(比线上滚动卡更丰富;命中走手写稿,未命中走 API 原文) */
+  const PRINT_OVERRIDES: Array<{ match: RegExp; description: string; highlights: string[] }> = [
+    {
+      match: /lessie/i,
+      description:
+        "红杉资本投资的 AI Agent 搜索系统，任职期间公司融资从 $100 万增至 $500 万；负责工程基建层与架构演进。完整链路：Prompt 理解→任务规划→工具路由→多源召回→结果治理→评测闭环。",
+      highlights: [
+        "五层全链路可观测体系（日均 20 亿+ Token）：LLM/工具/业务/API/Trace 分层采集，Kafka+Flink 实时聚合，与 LangSmith 双轨互补",
+        "评测平台 Apex：召回（Recall@K/MRR）· 排序（Precision@K/NDCG）· 业务（首轮命中率）三层度量，迭代可回归",
+        "单体物理机→Dubbo3→K8s 不停机迁移：协议隔离共存同一 Nacos，48h 并行观察 + 一键回滚",
+      ],
+    },
+  ];
+
   const projectCards = projects
     .map((pr) => {
+      const override = PRINT_OVERRIDES.find((o) => o.match.test(pr.name));
+      const description = override?.description ?? pr.description;
+      const highlights = override
+        ? override.highlights
+        : (pr.highlights ?? []).slice(0, 1).map(brief);
       const kindTag =
         pr.kind === "company"
           ? `<span class="os-k company">公司项目</span>`
@@ -69,8 +88,8 @@ export async function GET() {
         : "";
       return `<div class="os">
     <div class="os-h"><span class="os-n">${esc(pr.name)}${kindTag}</span>${link}</div>
-    <div class="os-d">${esc(pr.description)}</div>
-    ${(pr.highlights ?? []).slice(0, 1).map((h) => `<li>${esc(brief(h))}</li>`).join("")}
+    <div class="os-d">${esc(description)}</div>
+    ${highlights.map((h) => `<li>${esc(h)}</li>`).join("")}
   </div>`;
     })
     .join("");
