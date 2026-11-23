@@ -442,10 +442,6 @@
   gap: 1.25rem;
   padding-inline: 0.625rem;
 }
-/* 滚动卡内视觉图压扁为装饰横条(slice 裁剪不变形),省出的高度留给文字 */
-.project-marquee .art-stroke {
-  aspect-ratio: 16 / 5.5;
-}
 .project-marquee:hover .marquee-track,
 .project-marquee:focus-within .marquee-track {
   animation-play-state: paused;
@@ -482,44 +478,6 @@
   color: #729c00;
 }
 
-/* ========== 项目视觉图:深空屏(恒定暖黑底 + lime 亮线,与暖白页面对撞)========== */
-.art {
-  display: block;
-  width: 100%;
-  height: auto;
-  color: #fff;
-  background:
-    radial-gradient(90% 85% at 16% 6%, rgba(145, 230, 0, 0.16), transparent 62%),
-    radial-gradient(80% 75% at 90% 98%, rgba(168, 255, 26, 0.12), transparent 58%),
-    linear-gradient(180deg, #141410, #0a0a08);
-}
-.art-stroke {
-  aspect-ratio: 16 / 8.5;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
-}
-.art-side {
-  height: 100%;
-  min-height: 280px;
-  border-inline-start: 1px solid rgba(255, 255, 255, 0.06);
-}
-/* 暗色下图面抬亮半档，与卡面拉开，保住"屏"的边界 */
-/* featured 卡在移动端：视觉图降为普通横条，避免大块深色占屏 */
-@media (max-width: 767px) {
-  .art-side {
-    height: auto;
-    min-height: 0;
-    aspect-ratio: 16 / 8.5;
-    border-inline-start: none;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
-  }
-}
-.card:hover .art .art-accent {
-  opacity: 1;
-}
-.art .art-accent {
-  opacity: 0.72;
-  transition: opacity 0.4s ease;
-}
 
 /* ========== 滚动 reveal（一次性、克制）========== */
 [data-reveal] {
@@ -588,9 +546,6 @@
   .aurora-text {
     color: #000;
     -webkit-text-fill-color: #000;
-  }
-  .art {
-    display: none;
   }
   .card {
     display: block !important;

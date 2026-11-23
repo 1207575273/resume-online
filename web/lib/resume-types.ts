@@ -52,6 +52,8 @@ export interface ProjectItem {
   highlights?: string[];
   tech?: string[];
   link?: string;
+  /** 项目归属:personal 个人项目 / company 公司项目(缺省 = 不显示归属标签) */
+  kind?: "personal" | "company";
 }
 
 export interface EducationItem {

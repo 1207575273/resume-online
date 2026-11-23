@@ -55,6 +55,8 @@ export interface ProjectItem {
   highlights?: string[];
   tech?: string[];
   link?: string;
+  /** 项目归属:personal 个人项目 / company 公司项目(缺省 = 不显示归属标签) */
+  kind?: "personal" | "company";
 }
 
 export interface EducationItem {
@@ -167,12 +169,14 @@ export function createResumeContent(raw: unknown): ResumeContent {
 
   const projects: ProjectItem[] = arr(root, "projects", "content").map((item) => {
     const project = asRecord(item, "content.projects[]");
+    const rawKind = str(project, "kind", "projects[]", true);
     return {
       name: str(project, "name", "projects[]")!,
       description: str(project, "description", "projects[]")!,
       highlights: strArray(project, "highlights", "projects[]", true),
       tech: strArray(project, "tech", "projects[]", true),
       link: str(project, "link", "projects[]", true),
+      kind: rawKind === "personal" || rawKind === "company" ? rawKind : undefined,
     };
   });
 

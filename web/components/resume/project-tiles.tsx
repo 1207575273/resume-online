@@ -1,7 +1,6 @@
 import { ArrowUpRight } from "lucide-react";
 import { Chip } from "@/components/resume/chip";
 import { Highlights } from "@/components/resume/highlights";
-import { ProjectArt } from "@/components/resume/project-art";
 import type { ProjectItem } from "@/lib/resume-types";
 
 /**
@@ -108,6 +107,23 @@ function TechChips({ tech }: { tech?: string[] }) {
   );
 }
 
+/** 项目归属角标:个人项目 lime 描边 / 公司项目中性灰;缺省不渲染 */
+function KindTag({ kind }: { kind?: ProjectItem["kind"] }) {
+  if (kind !== "personal" && kind !== "company") return null;
+  const personal = kind === "personal";
+  return (
+    <span
+      className={`inline-flex shrink-0 items-center rounded-full px-2.5 py-0.5 text-[10.5px] font-semibold tracking-wide ${
+        personal
+          ? "bg-[rgba(208,249,59,0.18)] text-[#5a7a00] shadow-[inset_0_0_0_1px_rgba(145,230,0,0.45)]"
+          : "bg-[var(--chip-bg)] text-[var(--text-dim)] shadow-[inset_0_0_0_1px_var(--hairline)]"
+      }`}
+    >
+      {personal ? "个人项目" : "公司项目"}
+    </span>
+  );
+}
+
 function MarqueeCard({
   project,
   index,
@@ -116,26 +132,24 @@ function MarqueeCard({
   return (
     <article
       data-slot="card"
-      className="card group flex h-full w-[300px] flex-col overflow-hidden sm:w-[340px]"
+      className="card group flex h-full w-[300px] flex-col overflow-hidden p-6 sm:w-[340px]"
     >
-      <ProjectArt name={project.name} index={index} />
-      <div className="flex flex-1 flex-col p-6">
-        <div className="flex items-start justify-between gap-3">
-          <CardTitle
-            name={project.name}
-            link={project.link}
-            interactive={interactive}
-            className="text-[1.05rem] leading-snug font-semibold"
-          />
-          <CardLink name={project.name} link={project.link} interactive={interactive} />
-        </div>
-        <p className="mt-2 text-[14px] leading-relaxed text-[var(--text-dim)]">
-          {project.description}
-        </p>
-        <Highlights items={project.highlights ?? []} className="mt-3" />
-        <div className="mt-auto pt-4">
-          <TechChips tech={project.tech} />
-        </div>
+      <div className="flex items-start justify-between gap-3">
+        <KindTag kind={project.kind} />
+        <CardLink name={project.name} link={project.link} interactive={interactive} />
+      </div>
+      <CardTitle
+        name={project.name}
+        link={project.link}
+        interactive={interactive}
+        className="mt-2 text-[1.05rem] leading-snug font-semibold"
+      />
+      <p className="mt-2 text-[14px] leading-relaxed text-[var(--text-dim)]">
+        {project.description}
+      </p>
+      <Highlights items={project.highlights ?? []} className="mt-3" />
+      <div className="mt-auto pt-4">
+        <TechChips tech={project.tech} />
       </div>
     </article>
   );
