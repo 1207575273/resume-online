@@ -609,3 +609,10 @@
 .ad-ins {
   min-height: 90px;
 }
+
+/* 联系卡片内焦点样式:lime 呼吸光圈替代全局 2px outline(消除点击后的绿色横杆) */
+.contact-card a:focus-visible,
+.contact-card button:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(145, 230, 0, 0.65);
+}

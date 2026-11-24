@@ -76,7 +76,7 @@ export function ContactCard({ profile }: { profile: ResumeProfile }) {
       style={{ animation: "contact-fade 0.22s ease both" }}
     >
       <div
-        className="relative w-full max-w-[380px] rounded-3xl border border-[rgba(145,230,0,0.35)] bg-[#ffffff] p-7 shadow-[0_28px_80px_-24px_rgba(37,44,53,0.45)]"
+        className="contact-card relative w-full max-w-[380px] rounded-3xl border border-[rgba(145,230,0,0.35)] bg-[#ffffff] p-7 shadow-[0_28px_80px_-24px_rgba(37,44,53,0.45)]"
         onClick={(e) => e.stopPropagation()}
         style={{ animation: "contact-rise 0.26s cubic-bezier(0.2,0.65,0.25,1) both" }}
       >
@@ -97,7 +97,7 @@ export function ContactCard({ profile }: { profile: ResumeProfile }) {
             type="button"
             onClick={close}
             aria-label="关闭"
-            className="flex size-9 cursor-pointer items-center justify-center rounded-full text-[#8a8a85] transition-colors duration-200 hover:bg-[rgba(208,249,59,0.25)] hover:text-[#0e0e0e]"
+            className="contact-row flex size-9 cursor-pointer items-center justify-center rounded-full text-[#8a8a85] transition-colors duration-200 hover:bg-[rgba(208,249,59,0.25)] hover:text-[#0e0e0e]"
           >
             <X className="size-[18px]" aria-hidden />
           </button>
@@ -124,7 +124,8 @@ export function ContactCard({ profile }: { profile: ResumeProfile }) {
                     href={row.href}
                     target={/^https?:/i.test(row.href) ? "_blank" : undefined}
                     rel="noreferrer noopener"
-                    className="flex items-center gap-3.5 rounded-2xl border border-transparent px-3 py-2.5 transition-all duration-200 hover:border-[rgba(145,230,0,0.45)] hover:bg-[rgba(244,251,232,0.6)]"
+                    onClick={close}
+                    className="contact-row flex items-center gap-3.5 rounded-2xl border border-transparent px-3 py-2.5 transition-all duration-200 hover:border-[rgba(145,230,0,0.45)] hover:bg-[rgba(244,251,232,0.6)]"
                   >
                     {inner}
                   </a>
