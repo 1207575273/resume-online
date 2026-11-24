@@ -29,7 +29,24 @@ export function ContactCard({ profile }: { profile: ResumeProfile }) {
 
   useEffect(() => {
     if (!open) return;
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") return setOpen(false);
+      // 焦点圈闭:Tab 循环在卡片内,不跑到背景元素
+      if (e.key !== "Tab") return;
+      const dialog = document.querySelector('[role="dialog"] > div');
+      if (!dialog) return;
+      const focusables = dialog.querySelectorAll<HTMLElement>("a[href], button:not([disabled])");
+      if (focusables.length === 0) return;
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
     window.addEventListener("keydown", onKey);
     document.body.style.overflow = "hidden";
     return () => {
