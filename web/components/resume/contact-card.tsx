@@ -105,12 +105,6 @@ export function ContactCard({ profile }: { profile: ResumeProfile }) {
         onClick={(e) => e.stopPropagation()}
         style={{ animation: "contact-rise 0.26s cubic-bezier(0.2,0.65,0.25,1) both" }}
       >
-        {/* 头部:渐变顶线 + 标题 + 关闭 */}
-        <div
-          className="absolute inset-x-0 top-0 h-[3px] rounded-t-3xl"
-          style={{ background: "linear-gradient(90deg,#91e600,#a8ff1a,#d0f93b)" }}
-          aria-hidden
-        />
         <div className="flex items-start justify-between gap-4">
           <div>
             <h3 className="text-[1.35rem] font-bold tracking-wide text-[#0e0e0e]">联系我</h3>
