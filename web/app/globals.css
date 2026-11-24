@@ -452,6 +452,32 @@
   }
 }
 
+/* ========== 联系方式卡片弹层动画 ========== */
+@keyframes contact-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes contact-rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .no-print[style*="contact-fade"],
+  [style*="contact-rise"] {
+    animation: none !important;
+  }
+}
+
 /* ========== 数字证据芯片墙(复用 marquee 骨架,独立节奏)========== */
 .stat-track {
   animation-duration: 52s;

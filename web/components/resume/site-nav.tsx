@@ -32,12 +32,13 @@ export function SiteNav() {
           ))}
         </div>
         <div className="flex items-center gap-1.5">
-          <a
-            href="mailto:yang1207575273@163.com"
-            className="nav-link mr-2 hidden sm:inline"
+          <button
+            type="button"
+            onClick={() => window.dispatchEvent(new CustomEvent("resume:contact"))}
+            className="nav-link mr-2 hidden cursor-pointer sm:inline"
           >
             联系
-          </a>
+          </button>
         </div>
       </div>
     </nav>

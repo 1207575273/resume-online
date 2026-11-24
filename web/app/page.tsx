@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { AdSlot } from "@/components/ads/ad-slot";
+import { ContactCard } from "@/components/resume/contact-card";
 import { fetchPublishedResume } from "@/lib/api";
 import { EducationSection, SiteFooter } from "@/components/resume/education-footer";
 import { ExperienceSpec } from "@/components/resume/experience-spec";
@@ -42,6 +43,7 @@ export default async function HomePage() {
     <>
       <main>
         <Hero profile={content.profile} />
+        <ContactCard profile={content.profile} />
         <StatBand />
         {content.experiences.length > 0 && <ExperienceSpec experiences={content.experiences} />}
         {content.skillGroups.length > 0 && <SkillSpec groups={content.skillGroups} />}
