@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { ArrowUpRight, Mail, MapPin, Phone, X } from "lucide-react";
 import type { ResumeProfile } from "@/lib/resume-types";
 
@@ -20,6 +20,13 @@ interface ContactRow {
 
 export function ContactCard({ profile }: { profile: ResumeProfile }) {
   const [open, setOpen] = useState(false);
+  const cardRef = useRef<HTMLDivElement>(null);
+
+  // 打开即把焦点移入卡片(关闭按钮):Tab 从第一步就在卡片内循环
+  useEffect(() => {
+    if (!open) return;
+    cardRef.current?.querySelector<HTMLElement>("button[aria-label=\"关闭\"]")?.focus();
+  }, [open]);
 
   useEffect(() => {
     const onOpen = () => setOpen(true);
@@ -93,6 +100,7 @@ export function ContactCard({ profile }: { profile: ResumeProfile }) {
       style={{ animation: "contact-fade 0.22s ease both" }}
     >
       <div
+        ref={cardRef}
         className="contact-card relative w-full max-w-[380px] rounded-3xl border border-[rgba(145,230,0,0.35)] bg-[#ffffff] p-7 shadow-[0_28px_80px_-24px_rgba(37,44,53,0.45)]"
         onClick={(e) => e.stopPropagation()}
         style={{ animation: "contact-rise 0.26s cubic-bezier(0.2,0.65,0.25,1) both" }}
