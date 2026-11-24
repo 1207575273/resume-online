@@ -1,5 +1,6 @@
 "use client";
 
+import { ArrowUp } from "lucide-react";
 import { useEffect, useState } from "react";
 
 const LINKS = [
@@ -10,9 +11,14 @@ const LINKS = [
 
 export function SiteNav() {
   const [scrolled, setScrolled] = useState(false);
+  const [showTop, setShowTop] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 8);
+    const onScroll = () => {
+      setScrolled(window.scrollY > 8);
+      // 回顶图标:滚过约一屏(hero 之后)才出现——顶部时回顶无意义,不显示
+      setShowTop(window.scrollY > window.innerHeight * 0.7);
+    };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
@@ -21,8 +27,17 @@ export function SiteNav() {
   return (
     <nav className={`site-nav no-print ${scrolled ? "scrolled" : ""}`} aria-label="站内导航">
       <div className="mx-auto flex max-w-[1080px] items-center justify-between px-6">
-        <a href="#top" className="text-[15px] font-semibold tracking-wide">
-          杨胜
+        <a
+          href="#top"
+          aria-label="回到顶部"
+          title="回到顶部"
+          className={`flex size-9 items-center justify-center rounded-full border transition-all duration-300 ${
+            showTop
+              ? "pointer-events-auto border-[var(--hairline)] text-[var(--text-dim)] opacity-100 hover:border-[rgba(145,230,0,0.55)] hover:text-[#5a7a00]"
+              : "pointer-events-none border-transparent opacity-0"
+          }`}
+        >
+          <ArrowUp className="size-[18px]" aria-hidden />
         </a>
         <div className="flex items-center gap-5 md:gap-7">
           {LINKS.map((link) => (
