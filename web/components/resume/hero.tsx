@@ -1,4 +1,5 @@
 import { ArrowUpRight } from "lucide-react";
+import { ContactTrigger } from "@/components/resume/contact-trigger";
 import { HeroName } from "@/components/resume/hero-name";
 import { HeroParallax } from "@/components/resume/hero-parallax";
 import { ParticleField } from "@/components/resume/particle-field";
@@ -72,13 +73,9 @@ export function Hero({ profile }: HeroProps) {
           className="animate-in fade-in duration-1000 fill-mode-both mt-10 flex flex-wrap items-center justify-center gap-3"
           style={{ animationDelay: "520ms" }}
         >
-          <button
-            type="button"
-            onClick={() => window.dispatchEvent(new CustomEvent("resume:contact"))}
-            className="inline-flex cursor-pointer items-center gap-1.5 rounded-full bg-[var(--accent-solid)] px-6 py-2.5 text-[15px] font-semibold text-[#0e0e0e] transition-opacity duration-200 hover:opacity-85"
-          >
+          <ContactTrigger className="inline-flex cursor-pointer items-center gap-1.5 rounded-full bg-[var(--accent-solid)] px-6 py-2.5 text-[15px] font-semibold text-[#0e0e0e] transition-opacity duration-200 hover:opacity-85">
             联系方式
-          </button>
+          </ContactTrigger>
           {profile.links
             .filter((link) => /github/i.test(link.url))
             .map((link) => (
