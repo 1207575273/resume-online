@@ -31,10 +31,10 @@ export function SiteNav() {
           href="#top"
           aria-label="回到顶部"
           title="回到顶部"
-          className={`flex size-9 items-center justify-center rounded-full border transition-all duration-300 ${
+          className={`flex size-9 items-center justify-center rounded-full transition-all duration-300 ${
             showTop
-              ? "pointer-events-auto border-[var(--hairline)] text-[var(--text-dim)] opacity-100 hover:border-[rgba(145,230,0,0.55)] hover:text-[#5a7a00]"
-              : "pointer-events-none border-transparent opacity-0"
+              ? "pointer-events-auto text-[var(--text-dim)] opacity-100 hover:bg-[rgba(208,249,59,0.22)] hover:text-[#5a7a00]"
+              : "pointer-events-none opacity-0"
           }`}
         >
           <ArrowUp className="size-[18px]" aria-hidden />
