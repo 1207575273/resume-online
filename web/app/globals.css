@@ -616,3 +616,54 @@
   outline: none;
   box-shadow: 0 0 0 2px rgba(145, 230, 0, 0.65);
 }
+
+/* ========== 职业路径时间线 ========== */
+.timeline-item::before {
+  content: "";
+  position: absolute;
+  top: -8px;
+  left: 20px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #91e600;
+  box-shadow: 0 0 0 4px rgba(145, 230, 0, 0.18);
+}
+.timeline-item::after {
+  content: "";
+  position: absolute;
+  top: -4px;
+  left: 34px;
+  right: -24px;
+  height: 2px;
+  background: linear-gradient(90deg, rgba(145, 230, 0, 0.7), rgba(208, 249, 59, 0.25));
+}
+.timeline-item:last-child::after {
+  display: none;
+}
+@media (min-width: 768px) {
+  .timeline {
+    padding-top: 8px;
+  }
+}
+@media (max-width: 767px) {
+  .timeline-item {
+    padding-left: 24px;
+  }
+  .timeline-item::before {
+    left: 0;
+    top: 22px;
+  }
+  .timeline-item::after {
+    left: 4px;
+    right: auto;
+    top: 34px;
+    bottom: -36px;
+    width: 2px;
+    height: auto;
+    background: linear-gradient(180deg, rgba(145, 230, 0, 0.7), rgba(208, 249, 59, 0.2));
+  }
+  .timeline-item:last-child::after {
+    display: none;
+  }
+}

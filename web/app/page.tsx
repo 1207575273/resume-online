@@ -3,6 +3,7 @@ import { AdSlot } from "@/components/ads/ad-slot";
 import { ContactCard } from "@/components/resume/contact-card";
 import { fetchPublishedResume } from "@/lib/api";
 import { EducationSection, SiteFooter } from "@/components/resume/education-footer";
+import { CareerTimeline } from "@/components/resume/career-timeline";
 import { ExperienceSpec } from "@/components/resume/experience-spec";
 import { Hero } from "@/components/resume/hero";
 import { ProjectTiles } from "@/components/resume/project-tiles";
@@ -45,6 +46,7 @@ export default async function HomePage() {
         <Hero profile={content.profile} />
         <ContactCard profile={content.profile} />
         <StatBand />
+        <CareerTimeline experiences={content.experiences} />
         {content.experiences.length > 0 && <ExperienceSpec experiences={content.experiences} />}
         {content.skillGroups.length > 0 && <SkillSpec groups={content.skillGroups} />}
         {content.projects.length > 0 && <ProjectTiles projects={content.projects} />}
