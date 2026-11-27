@@ -19,6 +19,10 @@ export interface ResumeProfile {
   links: ResumeLink[];
   /** 定位标签（如「AI 原生人才」），Hero 区展示；旧版本缺省为空 */
   tags?: string[];
+  /** 兴趣爱好(兴趣板块展示) */
+  interests?: string[];
+  /** 职业人格画像(MBTI,如 ESTP) */
+  mbti?: string;
 }
 
 /** 单项技能：level 为 0-100 熟练度（用于分组排序与核心档判定），缺省 = 只展示名称不打分；
@@ -139,6 +143,8 @@ export function createResumeContent(raw: unknown): ResumeContent {
       return { label: str(link, "label", "links[]")!, url: str(link, "url", "links[]")! };
     }),
     tags: strArray(profileRaw, "tags", "content.profile", true),
+    interests: strArray(profileRaw, "interests", "content.profile", true),
+    mbti: str(profileRaw, "mbti", "content.profile", true),
   };
 
   const skillGroups: SkillGroup[] = arr(root, "skillGroups", "content").map((item) => {

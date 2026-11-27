@@ -17,6 +17,10 @@ export interface ResumeProfile {
   links: ResumeLink[];
   /** 定位标签（如「AI 原生人才」），Hero 区展示 */
   tags?: string[];
+  /** 兴趣爱好(兴趣板块展示) */
+  interests?: string[];
+  /** 职业人格画像(MBTI,如 ESTP) */
+  mbti?: string;
 }
 
 /** 单项技能：level 为 0-100 熟练度（分组排序/核心档判定），缺省 = 不打分；

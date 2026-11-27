@@ -3,6 +3,7 @@ import { AdSlot } from "@/components/ads/ad-slot";
 import { ContactCard } from "@/components/resume/contact-card";
 import { fetchPublishedResume } from "@/lib/api";
 import { EducationSection, SiteFooter } from "@/components/resume/education-footer";
+import { InterestSection } from "@/components/resume/interest-section";
 import { CareerTimeline } from "@/components/resume/career-timeline";
 import { ExperienceSpec } from "@/components/resume/experience-spec";
 import { Hero } from "@/components/resume/hero";
@@ -51,6 +52,7 @@ export default async function HomePage() {
         {content.skillGroups.length > 0 && <SkillSpec groups={content.skillGroups} />}
         {content.projects.length > 0 && <ProjectTiles projects={content.projects} />}
         <EducationSection education={content.education} />
+        <InterestSection profile={content.profile} />
       </main>
 
       {/* AdSense 展示位：未配置 NEXT_PUBLIC_ADSENSE_* 时不渲染（与无广告版完全一致） */}
